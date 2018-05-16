@@ -5,7 +5,20 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register t/**/*.spec.ts"
+    "test": "nyc mocha"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   },
   "repository": {
     "type": "git",
@@ -28,7 +41,9 @@
     "@types/node": "^10.1.0",
     "@types/sha1": "^1.1.1",
     "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
     "mocha": "^5.1.1",
+    "nyc": "^11.8.0",
     "ts-node": "^6.0.3"
   }
 }
