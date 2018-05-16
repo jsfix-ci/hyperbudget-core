@@ -12,7 +12,8 @@
             ]
         },
         "noImplicitAny": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "declaration": true
     },
     "include": [
         "src/**/*"

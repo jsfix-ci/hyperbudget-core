@@ -6,10 +6,7 @@ import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
 import { RuleMatchMode } from './enums';
 
-import { SystemConfig } from './config/system';
-
 import moment from 'moment';
-import { UserConfiguration } from 'user-configuration';
 
 export class Categoriser {
   categories: Category[];

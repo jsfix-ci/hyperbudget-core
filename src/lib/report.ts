@@ -4,7 +4,7 @@ import { Transaction } from './transaction';
 import { CSVParserManager } from './manager/csvparsermanager';
 import { Categoriser } from './categoriser';
 
-type ReportOptionsType =  { unique_only?: boolean };
+export type ReportOptionsType = { unique_only?: boolean };
 
 export interface Report {
   transactions: Transaction[];
