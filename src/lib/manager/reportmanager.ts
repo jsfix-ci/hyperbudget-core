@@ -2,10 +2,33 @@ import { Transaction } from '../transaction';
 import { Categoriser } from '../categoriser';
 import { Category } from '../../types/category';
 import { Utils } from '../utils';
+import { CSVParserManager } from './csvparsermanager';
+import ReportFactory from '../report';
 
 import moment from 'moment';
+import parse from 'csv-parse';
+import fs from 'fs';
 
 export class ReportManager {
+  static add_csvs(rf: ReportFactory, csvs: {name: string, type: string}[], idx:number=0, records:any[]=[]): Promise<any> {
+    if (!csvs.length) {
+      return Promise.resolve();
+    }
+
+    return new Promise(
+      (resolve, reject) => ( fs.readFile(csvs[idx].name, (err: NodeJS.ErrnoException, result: Buffer) => err ? reject(err) : resolve(result.toString()) ) )
+    )
+    .then((csv_text: string) => CSVParserManager.parseCSVFile(csvs[idx].name, csvs[idx].type))
+    .then(function(new_records: any[]) {
+      records = records.concat(new_records);
+      if (idx !== csvs.length-1) {
+        return ReportManager.add_csvs(rf, csvs, idx+1, records);
+      } else {
+        return rf.add_records(records);
+      }
+    });
+  }
+
   static generate_web_frontend_report (txns: Transaction[]): any[] {
     let formatted = JSON.parse(JSON.stringify(txns));
     let running_total_spend: number = 0;
