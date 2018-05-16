@@ -64,7 +64,7 @@ describe('Transaction', () => {
       txn_amount_debit: 25,
       acc_balance: 0,
       txn_desc: 'Amazon UK',
-      txn_src: 'fairfx-corp',
+      txn_src: 'FairFX Corp',
     });
 
     expect(transaction.txn_date).to.be.instanceOf(Date);

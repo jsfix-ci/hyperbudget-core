@@ -94,7 +94,7 @@ export class Transaction {
     let format: string;
 
     switch (src) {
-      case 'fairfx-corp':
+      case 'FairFX Corp':
       format = Options.DATE_FORMAT_SANE;
       break;
       default:
