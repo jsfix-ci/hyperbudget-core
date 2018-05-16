@@ -60,8 +60,8 @@ describe('ReportFactory', () => {
         'txn_desc': 'Second September Transaction',
       }
     ]).then(function() {
-      rf.filter_month('201709');
       let report = rf.report;
+      report.filter_month('201709');
 
       expect(report).to.have.property('transactions').with.lengthOf(2);
       expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.true;

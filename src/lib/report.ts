@@ -9,6 +9,8 @@ export type ReportOptionsType = { unique_only?: boolean };
 export interface Report {
   transactions: Transaction[];
   transactions_org: Transaction[];
+
+  filter_month(month: string): void;
 };
 
 class ReportImpl implements Report {
@@ -19,8 +21,16 @@ class ReportImpl implements Report {
     this.transactions = [];
     this.transactions_org = [];
   }
-}
 
+  filter_month(month: string): void {
+    if (!this.transactions) {
+      throw new Error ("No transactions yet");
+    }
+
+    this.transactions_org = this.transactions.filter(txn => txn.org_month === month);
+    this.transactions = this.transactions.filter(txn => txn.month === month);
+  }
+}
 
 export class ReportFactory {
   private _report: ReportImpl;
@@ -67,15 +77,6 @@ export class ReportFactory {
     this.report.transactions = this.report.transactions.concat (transactions);
 
     return new Promise((resolve, reject) => resolve());
-  }
-
-  filter_month(month: string) {
-    if (!this.report || !this.report.transactions) {
-      throw new Error ("No transactions yet");
-    }
-
-    this.report.transactions_org = this.report.transactions.filter(txn => txn.org_month === month);
-    this.report.transactions = this.report.transactions.filter(txn => txn.month === month);
   }
 }
 
