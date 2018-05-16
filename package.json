@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://errietta@errietta.me/home/errietta/.git_projects/hyperbudget-core"
+    "url": "https://github.com/hyperbudget/hyperbudget-core.git"
   },
   "author": "",
   "license": "MIT",
