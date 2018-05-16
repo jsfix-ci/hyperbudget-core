@@ -33,6 +33,11 @@ export class Transaction {
       'txn_amount_credit': function(val: string | number) { return Number(val); },
       'txn_date': function(val: string) { return this._parse_date(val); }.bind(this),
     };
+
+    if (record.txn_src) {
+      this.txn_src = record.txn_src;
+    }
+
     Object.keys(record).forEach(function(key: string) {
       this[key] = record[key];
 
