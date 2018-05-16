@@ -51,7 +51,7 @@ export class ReportFactory {
 
   add_records(records: any): Promise<void> {
     let transactions: Transaction[] = [];
-    let txnSeenIdentifierMap: { [key: string]: boolean };
+    let txnSeenIdentifierMap: { [key: string]: boolean } = {};
 
     records.forEach(function(record: any) {
       let txn:Transaction = new Transaction(record);
