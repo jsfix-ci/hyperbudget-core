@@ -21,7 +21,24 @@ export class Transaction {
   categories: Category[] = [];
   [key: string]: any;
 
-  constructor(record: any) {
+  constructor(
+    record: {
+      txn_date: string,
+      txn_type?: string,
+      acc_sortcode?: string,
+      acc_number?: string,
+      txn_desc?: string,
+      txn_amount_debit?: number,
+      txn_amount_credit?: number,
+      txn_src?: string,
+      acc_balance?: number,
+      month?: string,
+      org_month?: string,
+      categories?: Category[],
+      identifier?: string,
+      [k: string]: any,
+    }
+  ) {
     let _validators: { [ idx: string ]: any } = {
       'txn_amount_debit' : function(val: any) { return (!val || !isNaN(val)); },
       'txn_amount_credit': function(val: any) { return (!val || !isNaN(val)); },
