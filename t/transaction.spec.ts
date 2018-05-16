@@ -4,8 +4,6 @@ import { expect, assert } from 'chai';
 import 'mocha';
 import moment from 'moment';
 
-import { SystemConfig } from '../src/lib/config/system';
-
 describe('Transaction', () => {
   it('Can be constructed', () => {
     let transaction = new Transaction({
