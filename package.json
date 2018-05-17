@@ -13,7 +13,8 @@
       ".tsx"
     ],
     "exclude": [
-      "**/*.d.ts"
+      "**/*.d.ts",
+      "dist/**/*"
     ],
     "reporter": [
       "html",
