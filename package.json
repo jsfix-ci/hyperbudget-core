@@ -14,7 +14,8 @@
     ],
     "exclude": [
       "**/*.d.ts",
-      "dist/**/*"
+      "dist/**/*",
+      "t/**/*"
     ],
     "reporter": [
       "html",
