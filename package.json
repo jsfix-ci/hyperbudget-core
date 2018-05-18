@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "nyc mocha"
+    "build": "tsc",
+    "test": "nyc mocha",
+    "prepublish": "npm run build",
+    "prebuild": "npm run test"
   },
   "nyc": {
     "extension": [
