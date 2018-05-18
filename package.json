@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "test": "nyc mocha",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "prebuild": "npm run test"
   },
   "nyc": {
