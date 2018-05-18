@@ -4,4 +4,3 @@ node_modules
 .dependencies
 .nyc_output
 coverage
-dist
