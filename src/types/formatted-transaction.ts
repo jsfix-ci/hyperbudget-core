@@ -6,6 +6,10 @@ Also, this gives 2 new members: cat_class (which is the classnames for the categ
 */
 
 export type FormattedTransaction = {
+  txn_type: string;
+  txn_desc: string;
+  txn_src: string;
+
   cat_class: string;
   category_names: string;
   categories: Category[],
