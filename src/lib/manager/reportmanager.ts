@@ -1,6 +1,9 @@
 import { Transaction } from '../transaction';
 import { Categoriser } from '../categoriser';
 import { Category } from '../../types/category';
+import { FormattedTransaction } from '../../types/formatted-transaction';
+import { CategoryAmounts } from '../../types/category-amounts';
+
 import { Utils } from '../utils';
 import { CSVParserManager } from './csvparsermanager';
 import ReportFactory from '../report';
@@ -9,18 +12,18 @@ import moment from 'moment';
 import parse from 'csv-parse';
 
 export class ReportManager {
-  static generate_web_frontend_report (txns: Transaction[]): any[] {
-    let formatted = JSON.parse(JSON.stringify(txns));
+  static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
+    let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
     let running_total_spend: number = 0;
 
-    formatted.forEach(function(formatted_txn: any) {
+    formatted.forEach(function(formatted_txn: FormattedTransaction) {
       formatted_txn.cat_class      = formatted_txn.categories.map((c: Category) => c.className).join(" ");
       formatted_txn.category_names = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
 
-      formatted_txn.txn_amount_credit = Utils.format_number(formatted_txn.txn_amount_credit);
-      formatted_txn.txn_amount_debit  = Utils.format_number(formatted_txn.txn_amount_debit);
-      formatted_txn.acc_balance       = Utils.format_number(formatted_txn.acc_balance);
+      formatted_txn.txn_amount_credit_str = Utils.format_number(formatted_txn.txn_amount_credit);
+      formatted_txn.txn_amount_debit_str  = Utils.format_number(formatted_txn.txn_amount_debit);
+      formatted_txn.acc_balance_str       = Utils.format_number(formatted_txn.acc_balance);
 
       formatted_txn.txn_date          = moment(formatted_txn.txn_date).format('YYYY-MM-DD');
 
@@ -36,11 +39,8 @@ export class ReportManager {
     return formatted;
   }
 
-  static generate_category_amounts (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]) {
-    let cat_amts: {[key:string]: {
-      total: number, count: number,
-      id?: string, name: string, className: string,
-    }} = {};
+  static generate_category_amounts (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]): CategoryAmounts {
+    let cat_amts: CategoryAmounts = {};
 
     let cats: Category[] = categoriser.categories
 
