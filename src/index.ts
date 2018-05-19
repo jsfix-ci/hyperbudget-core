@@ -9,3 +9,5 @@ export { Category } from './types/category';
 export { CSVParserManager } from './lib/manager/csvparsermanager';
 export { ReportManager } from './lib/manager/reportmanager';
 
+export { FormattedTransaction } from './types/formatted-transaction';
+export { CategoryAmounts } from './types/category-amounts';
