@@ -35,6 +35,7 @@ class ReportImpl implements Report {
 export class ReportFactory {
   private _report: ReportImpl;
   private options: ReportOptionsType;
+  private _txnSeenIdentifierMap: { [key: string]: boolean } = {};
 
   constructor(options?: ReportOptionsType) {
     this.options = options || {};
@@ -61,17 +62,16 @@ export class ReportFactory {
 
   add_records(records: any): Promise<void> {
     let transactions: Transaction[] = [];
-    let txnSeenIdentifierMap: { [key: string]: boolean } = {};
 
     records.forEach(function(record: any) {
       let txn:Transaction = new Transaction(record);
 
       //unique only
-      if (!this.options.unique_only || !txnSeenIdentifierMap[txn.identifier]) {
+      if (!this.options.unique_only || !this._txnSeenIdentifierMap[txn.identifier]) {
         transactions.push(txn);
       }
 
-      txnSeenIdentifierMap[txn.identifier] = true;
+      this._txnSeenIdentifierMap[txn.identifier] = true;
     }.bind(this));
 
     this.report.transactions = this.report.transactions.concat (transactions);
