@@ -19,7 +19,7 @@ export class CSVParser {
     return records;
   }
 
-  parseCSVFile(input: string): Promise<any> {
+  parseCSVFile(input: string): Promise<any[]> {
     return new Promise(
       function(resolve: Function, reject: Function) {
         this.sanitiseInput(input).then(function(csv_text: string) {
