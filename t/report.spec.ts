@@ -67,6 +67,34 @@ describe('ReportFactory', () => {
       expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.true;
       expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.true;
       expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.false;
+
+      report.filter_month('201701');
+      expect(report).to.have.property('transactions').with.lengthOf(1);
+      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.false;
+      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.false;
+      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.true;
+
+      report.filter_month('201801');
+      expect(report).to.have.property('transactions').with.lengthOf(0);
+
+      rf.add_records([{
+        'txn_date': '01/01/2018',
+        'txn_amount_credit': 1000,
+        'txn_amount_debit': 0,
+        'acc_balance': 1000,
+        'txn_desc': 'January 2018 Transaction',
+      }]);
+    }).then(() => {
+      let report = rf.report;
+
+      expect(report).to.have.property('transactions').with.lengthOf(1);
+      expect(report.transactions[0].txn_desc).to.equal('January 2018 Transaction');
+
+      report.filter_month('201701');
+      expect(report).to.have.property('transactions').with.lengthOf(1);
+
+      report.reset_filter();
+      expect(report).to.have.property('transactions').with.lengthOf(4);
     });
   });
   it('Can be configured to only keep unique transactions', () => {
