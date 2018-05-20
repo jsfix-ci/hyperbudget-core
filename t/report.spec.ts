@@ -152,12 +152,22 @@ describe('ReportFactory', () => {
             'acc_balance': 2000,
             'txn_desc': 'January Transaction',
           },
-        ]).then(function() {
+        ]).then(() => {
+          rf.add_records([
+            {
+              'txn_date': '01/01/2017',
+              'txn_amount_credit': 0,
+              'txn_amount_debit': 1000,
+              'acc_balance': 1000,
+              'txn_desc': 'January Transaction',
+            },
+          ])
+        }).then(function() {
           let report = rf.report;
           expect(report).to.have.property('transactions').with.lengthOf(2);
           expect(report.transactions[0].acc_balance).to.equal(1000);
           expect(report.transactions[1].acc_balance).to.equal(2000);
-        });
+        })
       });
     });
   });
