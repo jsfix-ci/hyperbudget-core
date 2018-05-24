@@ -73,10 +73,6 @@ export class Categoriser {
   }
 
   categorise_transactions(transactions: Transaction[]) : Promise<void> {
-    if (!transactions.length) {
-      throw new Error("Need to add some records first");
-    }
-
     transactions.forEach((txn: Transaction) => {
       txn.categories = this.categorise(txn);
     });
