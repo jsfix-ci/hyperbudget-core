@@ -34,10 +34,15 @@ export class HSBCCSVParser extends CSVParser {
         delete record.txn_amount;
 
         //pulls the transaction type off the end of the description, which is a 2-3 character code at the end of the string, preceded by whitespace
-        const type_from_desc_match: string = record.txn_desc.match(/\s+(\S\S\S?)$/);
+        const type_from_desc_match: string[] = (<string>record.txn_desc).match(/\s+(\S\S\S?)$/);
 
         if (type_from_desc_match && type_from_desc_match.length >= 2) {
           record.txn_type = HSBCTransTypes[type_from_desc_match[1]];
+
+          // VISA network atm withdrawals?
+          if (record.txn_type === 'DEB' && !!record.txn_desc.match(/^CASH /)) {
+            record.txn_type = 'CPT';
+          }
         }
 
         record.txn_src = 'HSBC';
