@@ -1,4 +1,3 @@
-import { RuleMatchMode } from "../lib/enums";
 import { NumericMatchConfig, StringMatchConfig } from "./match-config";
 
 export type CategoryRule = {
