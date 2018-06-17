@@ -12,10 +12,6 @@ describe('Validation', () => {
       'category.id',
       'category.name',
       'category.className',
-      'category.hidden_on_cat_list',
-      'category.hidden_on_txn_list',
-      'category.hidden_on_running_total',
-      'category.txn_month_modifier',
     ]);
     expect(validator.validate_category({
       id: '',
@@ -133,5 +129,18 @@ describe('Validation', () => {
       txn_month_modifier: 1,
     })).to.deep.equal([
     ]);
+
+    expect(validator.validate_category({
+      name: 'should fail',
+      id: 'should-fail',
+      className: '',
+      category_rules: {
+        txn_desc: {
+          rules: [
+            [ '!!=', 'this should fail' ]
+          ]
+        }
+      }
+    })).to.deep.equal(['category.category_rules.txn_desc'])
   });
 });

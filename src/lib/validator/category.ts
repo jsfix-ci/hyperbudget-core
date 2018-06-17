@@ -26,7 +26,7 @@ const validate_category_rule = (input: any, callback: (rule: any) => {}) => {
 
 const validate_category_number_rule = (input: any) => {
   return validate_category_rule(input, (rule: any[]) => {
-    if (!rule[0].match(/=|\!=|\>|\<|\>=|\<=/)) {
+    if (!rule[0].match(/^(=|\!=|\>|\<|\>=|\<=)/)) {
       return false;
     }
 
@@ -40,8 +40,7 @@ const validate_category_number_rule = (input: any) => {
 
 const validate_category_string_rule = (input: any) => {
   return validate_category_rule(input, (rule: any[]) => {
-    if (!rule[0].match(/=|\!=|=\~|\!\~/)) {
-      console.log('wat');
+    if (!rule[0].match(/^(=|\!=|=\~|\!\~)$/)) {
       return false;
     }
 
@@ -105,10 +104,10 @@ export const validate_category = (category: any): string[] => {
     id: { rule: _is_string_not_empty },
     name: { rule: _is_string_not_empty },
     className: { rule: _is_string },
-    hidden_on_cat_list: { rule: _is_boolean },
-    hidden_on_txn_list: { rule: _is_boolean },
-    hidden_on_running_total: { rule: _is_boolean },
-    txn_month_modifier: { rule: _is_number },
+    hidden_on_cat_list: { rule: _is_boolean, optional: true },
+    hidden_on_txn_list: { rule: _is_boolean, optional: true },
+    hidden_on_running_total: { rule: _is_boolean, optional: true },
+    txn_month_modifier: { rule: _is_number, optional: true },
   }));
 
   return errors;
