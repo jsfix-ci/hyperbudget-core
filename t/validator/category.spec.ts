@@ -143,4 +143,80 @@ describe('Validation', () => {
       }
     })).to.deep.equal(['category.category_rules.txn_desc'])
   });
+
+  console.log  (validator.validate_categories(
+    [
+      {
+        name: '',
+        id: '',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=','mcdonalds']] }
+        }
+      },
+      {
+        name: 'fast food',
+        id: '',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'burger king']] }
+        }
+      },
+      {
+        name: 'tasty chicken',
+        id: 'kfc',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'kfc']] }
+        }
+      }
+    ]
+  ));
+
+  expect(validator.validate_categories(
+    [
+      {
+        name: '',
+        id: '',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=','mcdonalds']] }
+        }
+      },
+      {
+        name: 'fast food',
+        id: '',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'burger king']] }
+        }
+      },
+      {
+        name: 'tasty chicken',
+        id: 'kfc',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'kfc']] }
+        }
+      }
+    ]
+  )).to.deep.equal(
+    [
+      {
+        id: '',
+        idx: 0,
+        errors: [
+          'category.id',
+          'category.name'
+        ]
+      },
+      {
+        id: '',
+        idx: 1,
+        errors: [
+          'category.id'
+        ]
+      }
+    ]
+  );
 });
