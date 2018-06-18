@@ -26,7 +26,7 @@ const validate_category_rule = (input: any, callback: (rule: any) => {}) => {
 
 const validate_category_number_rule = (input: any) => {
   return validate_category_rule(input, (rule: any[]) => {
-    if (!rule[0].match(/^(=|\!=|\>|\<|\>=|\<=)/)) {
+    if (!rule[0].match(/^(=|\!=|\>|\<|\>=|\<=)$/)) {
       return false;
     }
 
