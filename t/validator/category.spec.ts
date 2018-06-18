@@ -144,35 +144,6 @@ describe('Validation', () => {
     })).to.deep.equal(['category.category_rules.txn_desc'])
   });
 
-  console.log  (validator.validate_categories(
-    [
-      {
-        name: '',
-        id: '',
-        className: '',
-        category_rules: {
-          txn_desc: { rules: [['=','mcdonalds']] }
-        }
-      },
-      {
-        name: 'fast food',
-        id: '',
-        className: '',
-        category_rules: {
-          txn_desc: { rules: [['=', 'burger king']] }
-        }
-      },
-      {
-        name: 'tasty chicken',
-        id: 'kfc',
-        className: '',
-        category_rules: {
-          txn_desc: { rules: [['=', 'kfc']] }
-        }
-      }
-    ]
-  ));
-
   expect(validator.validate_categories(
     [
       {
@@ -219,4 +190,37 @@ describe('Validation', () => {
       }
     ]
   );
+
+  expect(validator.validate_categories(
+    [
+      {
+        name: 'mcdonalds',
+        id: 'mcdonalds',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=','mcdonalds']] }
+        }
+      },
+      {
+        name: 'fast food',
+        id: 'bgk',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'burger king']] }
+        }
+      },
+      {
+        name: 'tasty chicken',
+        id: 'kfc',
+        className: '',
+        category_rules: {
+          txn_desc: { rules: [['=', 'kfc']] }
+        }
+      }
+    ]
+  )).to.deep.equal(
+    [
+    ]
+  );
+
 });
