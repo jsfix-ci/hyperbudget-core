@@ -1,8 +1,5 @@
-import * as path from 'path';
-
 import { Transaction } from './transaction';
 import { CSVParserManager } from './manager/csvparsermanager';
-import { Categoriser } from './categoriser';
 
 export type ReportOptionsType = { unique_only?: boolean };
 

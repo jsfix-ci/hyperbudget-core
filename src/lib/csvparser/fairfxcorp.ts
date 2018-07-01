@@ -12,6 +12,10 @@ export class FairFXCorpCSVParser extends CSVParser {
   };
 
   parseCSVRecords(records: any[]): any[]{
-    return super.parseCSVRecords(records);
+    return super.parseCSVRecords(records).map(record => ({
+      ...record,
+      txn_amount_credit: +record.txn_amount_credit,
+      txn_amount_debit: +record.txn_amount_debit,
+    }));
   }
 }

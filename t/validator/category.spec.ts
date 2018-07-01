@@ -1,10 +1,10 @@
 import * as validator from '../../src/lib/validator/category';
 
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import { RuleMatchMode } from '../../src/lib/enums';
 
-describe('Validation', () => {
+describe('Category Validation', () => {
   it('validates categories', () => {
     expect(validator.validate_category("not really")).to.deep.equal(['category']);
     expect(validator.validate_category({})).to.deep.equal([

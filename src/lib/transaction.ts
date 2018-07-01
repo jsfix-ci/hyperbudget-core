@@ -1,4 +1,3 @@
-import { Categoriser } from './categoriser';
 import { Category } from '../types/category';
 
 import moment from 'moment';

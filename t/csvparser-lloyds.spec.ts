@@ -14,9 +14,9 @@ describe('LloydsCSVParser', () => {
       'Sort Code': '11-12-34',
       'Account Number': '12345678',
       'Transaction Description': 'XXX',
-      'Debit Amount': 100,
-      'Credit Amount': 200,
-      'Balance': 2000,
+      'Debit Amount': '100',
+      'Credit Amount': '200',
+      'Balance': '2000',
     }]);
     it('Correctly parses records', () => {
       assert.ok(records);
