@@ -84,6 +84,10 @@ export class Transaction {
     let src = this.txn_src;
     let format: string;
 
+    if (!!txn_date.match(/\d{3}-\d{2}-\d{2}T/)) {
+      return moment(txn_date).toDate();
+    }
+
     format = Transaction._extract_date_format_based_on_source(src);
 
     return moment(txn_date, format).toDate();
