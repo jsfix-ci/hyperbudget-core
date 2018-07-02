@@ -13,4 +13,5 @@ export { FormattedTransaction } from './types/formatted-transaction';
 export { CategoryAmounts } from './types/category-amounts';
 
 export * from './lib/validator/category';
+export * from './lib/validator/transaction';
 export * from './lib/enums';
