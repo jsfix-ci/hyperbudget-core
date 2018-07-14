@@ -11,7 +11,6 @@ describe('Transaction Validation', () => {
       [
         'transaction.identifier',
         'transaction.txn_date',
-        'transaction.txn_type',
         'transaction.txn_desc',
         'transaction.txn_src',
         'transaction.month',

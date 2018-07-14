@@ -9,7 +9,7 @@ export const validate_transaction = (transaction: any): string[] => {
   let errors = validator.validate_complex('transaction', transaction, {
     identifier: { rule: validator.is_string_not_empty },
     txn_date: { rule: validator.is_date },
-    txn_type: { rule: validator.is_string_not_empty },
+    txn_type: { rule: validator.is_string, optional: true, },
     acc_number: {
       rule: (t) => validator.is_string(t) || validator.is_number(t),
       optional: true
