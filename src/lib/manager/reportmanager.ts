@@ -55,7 +55,7 @@ export class ReportManager {
         // It's the category being listed isn't internal_transfer but the txn cat is, skipit.
         if (! (cat.id !== 'tfr-pers' && Categoriser.is_internal_transfer(txn)) ) {
           if (!cat.hidden_on_cat_list) {
-            cat_amts[cat.name].total += txn.txn_amount_credit - txn.txn_amount_debit;
+            (<number>cat_amts[cat.name].total) += txn.txn_amount_credit - txn.txn_amount_debit;
             cat_amts[cat.name].count++;
           }
         }
@@ -82,13 +82,13 @@ export class ReportManager {
 
     //XXX UGLY
     if (cat_amts['Income'] && cat_amts['Expenditure']) {
-      cat_amts['total_gains'] = { name: 'In-Out', className: 'gains', total: Math.abs(cat_amts['Income'].total) - Math.abs(cat_amts['Expenditure'].total), count: 0 };
+      cat_amts['total_gains'] = { name: 'In-Out', className: 'gains', total: Math.abs(+cat_amts['Income'].total) - Math.abs(+cat_amts['Expenditure'].total), count: 0 };
     }
 
     return cat_amts;
   }
 
-  static generate_category_amounts_frontend (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]) {
+  static generate_category_amounts_frontend (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]): CategoryAmounts {
     let cat_amts = ReportManager.generate_category_amounts(categoriser, txns, org_txns);
     let filtered:any  = Object.keys(cat_amts).map((k) => {
       let filtered:any = cat_amts[k];

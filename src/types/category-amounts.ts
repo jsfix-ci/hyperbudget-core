@@ -1,6 +1,6 @@
 export type CategoryAmounts =  {
   [key:string]: {
-    total: number,
+    total: number | string,
     count: number,
     id?: string,
     name: string,
