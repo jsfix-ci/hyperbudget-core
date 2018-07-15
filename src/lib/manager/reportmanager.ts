@@ -10,6 +10,7 @@ import ReportFactory from '../report';
 
 import moment from 'moment';
 import parse from 'csv-parse';
+import { BreakdownFormatted, Breakdown } from 'breakdown';
 
 export class ReportManager {
   static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
@@ -99,11 +100,8 @@ export class ReportManager {
     return filtered.filter((c: any) => c.total && c.total != '0.00');
   }
 
-  static generate_monthly_breakdown (txns: Transaction[], months: string[]) {
-    let breakdown: {[k: string]: {
-      in: number, main_in: number, out: number, gains: number, main_gains: number,
-      running: number, running_main: number,
-    }} = {};
+  static generate_monthly_breakdown (txns: Transaction[], months: string[]): Breakdown {
+    let breakdown: Breakdown = {};
 
     months.forEach(function(month: string) {
       breakdown[month] = { in: 0, main_in: 0, out: 0, gains: 0, main_gains: 0, running: 0, running_main: 0};
@@ -143,7 +141,7 @@ export class ReportManager {
     return breakdown;
   }
 
-  static generate_monthly_breakdown_frontend (txns: Transaction[], months: string[]) {
+  static generate_monthly_breakdown_frontend (txns: Transaction[], months: string[]): BreakdownFormatted[] {
     let breakdown = ReportManager.generate_monthly_breakdown(txns, months);
 
     return Object.keys(breakdown).map((k) => {
