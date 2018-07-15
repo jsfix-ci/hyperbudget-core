@@ -10,7 +10,7 @@ import ReportFactory from '../report';
 
 import moment from 'moment';
 import parse from 'csv-parse';
-import { BreakdownFormatted, Breakdown } from 'breakdown';
+import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
 export class ReportManager {
   static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
