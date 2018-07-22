@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "RuleMatchMode": {
+      "type": "number",
+      "enum": [ 1001, 1002 ]
+    },
+    "NumericMatchConfig": {
+      "type": "object",
+      "properties": {
+        "mode": { "$ref": "#/definitions/RuleMatchMode" },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "type": "string" },
+                { "type": "number" },
+                {
+                  "type": "string",
+                  "enum": [ "=", "!=", ">", "<", ">=", "<=" ]
+                }
+              ]
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "StringMatchConfig": {
+      "type": "object",
+      "properties": {
+        "mode": { "$ref": "#/definitions/RuleMatchMode" },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "type": "string" },
+                { "type": "number" },
+                {
+                  "enum": [ "=", "!=", "=~", "!~" ]
+                }
+              ]
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "CategoryRule": {
+      "type": "object",
+      "properties": {
+        "txn_day": { "$ref": "#/definitions/NumericMatchConfig" },
+        "txn_desc": { "$ref": "#/definitions/StringMatchConfig" },
+        "txn_type": { "$ref": "#/definitions/StringMatchConfig" },
+        "txn_src": { "$ref": "#/definitions/StringMatchConfig" },
+        "txn_amount_debit": { "$ref": "#/definitions/NumericMatchConfig" },
+        "txn_amount_credit": { "$ref": "#/definitions/NumericMatchConfig" }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "minLength": 1},
+    "name": { "type": "string", "minLength": 1 },
+    "category_rules": { "$ref": "#/definitions/CategoryRule" },
+    "className": { "type": "string" },
+    "hidden_on_cat_list": { "type": "boolean" },
+    "hidden_on_txn_list": { "type": "boolean" },
+    "hidden_on_running_total": { "type": "boolean" },
+    "txn_month_modifier": { "type": "number" }
+  },
+  "required": [
+    "id",
+    "name",
+    "category_rules"
+  ]
+}

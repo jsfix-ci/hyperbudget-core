@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "txn_date": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "string" }
+      ]
+    },
+    "txn_type": { "type": "string" },
+    "acc_sortcode": { "type": "string" },
+    "acc_number": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "txn_desc": { "type": "string" },
+    "txn_amount_debit": { "type": "number" },
+    "txn_amount_credit": { "type": "number" },
+    "txn_src": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acc_balance": { "type": "number" },
+    "month": {
+      "type": "string",
+      "minLength": 1
+    },
+    "org_month": {
+      "type": "string",
+      "minLength": 1
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "./Category.json"
+      }
+    }
+  },
+  "required":[
+    "identifier",
+    "txn_date",
+    "txn_desc",
+    "txn_src",
+    "month",
+    "org_month"
+  ]
+}

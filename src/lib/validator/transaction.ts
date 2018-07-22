@@ -1,40 +1,26 @@
-import * as validator from "./validator";
-import { validate_categories } from "./category";
+import * as jsonschema from 'jsonschema';
+const txnSchema = require ('../../schema/Transaction.json');
+const catSchema = require ('../../schema/Category.json');
 
-export const validate_transaction = (transaction: any): string[] => {
-  if (typeof transaction !== 'object') {
-    return ['transaction'];
-  }
+export const validate_transaction = (transaction: any): jsonschema.ValidationError[] => {
+  const validator = new jsonschema.Validator();
+  validator.addSchema(catSchema, "/Category.json");
 
-  let errors = validator.validate_complex('transaction', transaction, {
-    identifier: { rule: validator.is_string_not_empty },
-    txn_date: { rule: validator.is_date },
-    txn_type: { rule: validator.is_string, optional: true, },
-    acc_number: {
-      rule: (t) => validator.is_string(t) || validator.is_number(t),
-      optional: true
-    },
-    txn_desc: { rule: validator.is_string_not_empty },
-    txn_amount_debit: { rule: validator.is_number, optional: true, default: 0 },
-    txn_amount_credit: { rule: validator.is_number, optional: true, default: 0 },
-    txn_src: { rule: validator.is_string_not_empty },
-    acc_balance: { rule: validator.is_number, optional: true },
-    month: { rule: validator.is_string_not_empty },
-    org_month: { rule: validator.is_string_not_empty },
+  const result: jsonschema.ValidatorResult = validator.validate(transaction, txnSchema);
+
+  result.errors.forEach(e => {
+    delete e.schema;
+    delete e.instance;
   });
 
-  if (transaction.categories) {
-    errors = errors.concat(...validate_categories(transaction.categories).map(e => e.errors));
-  }
-
-  return errors;
+  return result.errors;
 };
 
 export const validate_transactions =
   (transactions: any[]): {
     id: string,
     idx: number,
-    errors: string[]
+    errors: jsonschema.ValidationError[]
   }[] => {
     return transactions.map((txn, idx) => {
       let errors = validate_transaction(txn);
