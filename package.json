@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/schema && cp src/schema/*.json dist/schema",
     "test": "nyc mocha",
     "prepare": "npm run build",
     "prebuild": "npm run test"
