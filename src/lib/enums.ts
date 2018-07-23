@@ -1,4 +1,4 @@
 export enum RuleMatchMode {
-  Strict = 1001,
-  Flex,
+  Strict = "STRICT",
+  Flex   = "FLEX"
 };

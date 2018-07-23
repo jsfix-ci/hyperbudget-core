@@ -2,8 +2,8 @@
   "$schema": "http://json-schema.org/draft-04/schema",
   "definitions": {
     "RuleMatchMode": {
-      "type": "number",
-      "enum": [ 1001, 1002 ]
+      "type": "string",
+      "enum": [ "STRICT", "FLEX" ]
     },
     "NumericMatchConfig": {
       "type": "object",
