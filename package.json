@@ -1,6 +1,6 @@
 {
   "name": "@hyperbudget/hyperbudget-core",
-  "version": "3.0.0-beta5",
+  "version": "3.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
