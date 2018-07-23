@@ -106,13 +106,13 @@ describe('Categoriser', () => {
       "name": "Income",
       "category_rules": {
         "txn_amount_credit": {
-          "mode": 1001,
+          "mode": RuleMatchMode.Strict,
           "rules": [
             [">", 0]
           ]
         },
         "txn_desc": {
-          "mode": 1001,
+          "mode": RuleMatchMode.Strict,
           "rules": [
             ["!~", "J DOE"],
           ]
@@ -220,7 +220,7 @@ describe('Categoriser', () => {
           ]
         },
         "txn_desc": {
-          "mode": 1002,
+          "mode": RuleMatchMode.Strict,
           "rules": [
             ["=~", "ELECTRICITY CORP INC"]
           ]
