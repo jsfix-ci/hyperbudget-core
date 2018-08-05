@@ -1,18 +1,29 @@
 import { expect } from 'chai';
-import snapshot = require('snap-shot-it');
 
 import * as transaction_validator from '../../src/lib/validator/transaction';
 
 describe('Transaction Validation', () => {
   it('validates transactions', () => {
-    snapshot(transaction_validator.validate_transaction("not really"));
+    expect(transaction_validator.validate_transaction("not really")).to.deep.equal(['transaction']);
     let txn:any = {};
 
-    snapshot(transaction_validator.validate_transaction(txn));
+    expect(transaction_validator.validate_transaction(txn)).to.deep.equal(
+      [
+        'transaction.identifier',
+        'transaction.txn_date',
+        'transaction.txn_desc',
+        'transaction.txn_src',
+        'transaction.month',
+        'transaction.org_month',
+      ]
+    );
+
+    expect(txn.txn_amount_debit).to.equal(0);
+    expect(txn.txn_amount_credit).to.equal(0);
 
     txn = {
       identifier: '',
-      txn_date: '2018-02-28',
+      txn_date: '2018-02-29',
       txn_type: 'DD',
       acc_number: 123432523,
       txn_desc: 'Yo man',
@@ -24,7 +35,12 @@ describe('Transaction Validation', () => {
       org_month: '201806',
     };
 
-    snapshot(transaction_validator.validate_transaction(txn));
+    expect(transaction_validator.validate_transaction(txn)).to.deep.equal(
+      [
+        'transaction.identifier',
+        'transaction.txn_date',
+      ]
+    );
 
     txn = {
       identifier: 'wat',
@@ -82,7 +98,9 @@ describe('Transaction Validation', () => {
       },
     ];
 
-    snapshot(transaction_validator.validate_transaction(txn));
+    expect(transaction_validator.validate_transaction(txn)).to.deep.equal([
+      'category.category_rules.txn_desc',
+    ]);
 
     let txn2 = { ... txn};
 
@@ -90,10 +108,22 @@ describe('Transaction Validation', () => {
     delete txn2.categories;
     txn2.identifier = '';
 
-    snapshot(transaction_validator.validate_transactions([txn, txn2]));
-
-    snapshot(transaction_validator.validate_transaction({
-      categories: [{}],
-    }));
+    expect(transaction_validator.validate_transactions([txn, txn2])).to.deep.equal([
+      {
+        id: 'wat',
+        idx: 0,
+        errors: [
+          'transaction.txn_amount_credit',
+          'category.category_rules.txn_desc',
+        ],
+      },
+      {
+        id: '',
+        idx: 1,
+        errors: [
+          'transaction.identifier',
+        ],
+      },
+    ]);
   });
 });
