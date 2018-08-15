@@ -55,7 +55,7 @@ describe('Transaction', () => {
     });
 
     expect(transaction.txn_date).to.be.instanceOf(Date);
-    expect(moment(transaction.txn_date).isSame(moment('2018-07-05'))).to.be.true;
+    expect(moment(transaction.txn_date).isSame(moment('2018-07-05T00:00:00Z'))).to.be.true;
 
     transaction = new Transaction({
       txn_date: '2018-03-01',
