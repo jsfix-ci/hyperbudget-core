@@ -3,6 +3,7 @@ import { Category } from '../types/category';
 import moment from 'moment';
 import sha1 from 'sha1';
 import { Options } from './options';
+import { Utils } from './utils';
 
 export class Transaction {
   readonly identifier: string;
@@ -85,12 +86,12 @@ export class Transaction {
     let format: string;
 
     if (!!txn_date.match(/\d{3}-\d{2}-\d{2}T/)) {
-      return moment(txn_date).toDate();
+      return Utils.treatDateAsUTC(moment(txn_date).toDate());
     }
 
     format = Transaction._extract_date_format_based_on_source(src);
 
-    return moment(txn_date, format).toDate();
+    return Utils.treatDateAsUTC(moment(txn_date, format).toDate());
   }
 
   private static _extract_date_format_based_on_source(src: string): string {

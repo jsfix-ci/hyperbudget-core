@@ -4,7 +4,6 @@ import { RuleMatcher } from './rule/matcher';
 import { Category } from '../types/category';
 import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
-import { RuleMatchMode } from './enums';
 
 import moment from 'moment';
 
@@ -47,7 +46,7 @@ export class Categoriser {
     if (rule['txn_day'] && txn.txn_date) {
       let match_config: NumericMatchConfig = rule['txn_day'];
 
-      let day: number = moment(txn.txn_date).date();
+      let day: number = moment(txn.txn_date).utc().date();
       match = match && RuleMatcher.parse_number_rules(day, match_config);
     }
 
@@ -64,7 +63,7 @@ export class Categoriser {
 
         if (category.txn_month_modifier) {
           // do we want to bring this transaction 'backwards' or 'forwards'?
-          txn.month = moment(txn.txn_date).add(category.txn_month_modifier, 'month').format('YYYYMM');
+          txn.month = moment(txn.txn_date).utc().add(category.txn_month_modifier, 'month').format('YYYYMM');
         }
       }
     });
