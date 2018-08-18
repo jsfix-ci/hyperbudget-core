@@ -67,7 +67,7 @@ export class Transaction {
       }
     }.bind(this));
 
-    this.org_month = moment(this.txn_date).format('YYYYMM');
+    this.org_month = moment(this.txn_date).utc().format('YYYYMM');
 
     if (!this.month) {
       this.month = this.org_month;

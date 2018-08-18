@@ -2,7 +2,7 @@
 import { Report, ReportFactory } from '../src/lib/report';
 import { Transaction } from '../src/lib/transaction';
 
-import * as path from 'path';
+import moment from 'moment';
 
 import { expect, assert } from 'chai';
 import 'mocha';
@@ -125,9 +125,9 @@ describe('ReportFactory', () => {
     ]).then(function() {
       let report = rf.report;
       expect(report).to.have.property('transactions').with.lengthOf(3);
-      expect(report.transactions[0].txn_date.getDate()).to.equal(new Date('2017-01-01T00:00:00').getDate());
-      expect(report.transactions[1].txn_date.getDate()).to.equal(new Date('2017-01-01T00:00:00').getDate());
-      expect(report.transactions[2].txn_date.getDate()).to.equal(new Date('2017-01-02T00:00:00').getDate());
+      expect(moment(report.transactions[0].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+      expect(moment(report.transactions[1].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+      expect(moment(report.transactions[2].txn_date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
       rf = new ReportFactory({ unique_only: true, });
 
       return rf.from_records([
@@ -153,8 +153,8 @@ describe('ReportFactory', () => {
         let report = rf.report;
 
         expect(report).to.have.property('transactions').with.lengthOf(2);
-        expect(report.transactions[0].txn_date.getDate()).to.equal(new Date('2017-01-01T00:00:00').getDate());
-        expect(report.transactions[1].txn_date.getDate()).to.equal(new Date('2017-01-02T00:00:00').getDate());
+        expect(moment(report.transactions[0].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+        expect(moment(report.transactions[1].txn_date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
 
         rf = new ReportFactory({  unique_only: true, });
 

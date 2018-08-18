@@ -26,7 +26,7 @@ export class ReportManager {
       formatted_txn.txn_amount_debit_str  = Utils.format_number(formatted_txn.txn_amount_debit);
       formatted_txn.acc_balance_str       = Utils.format_number(formatted_txn.acc_balance);
 
-      formatted_txn.txn_date              = moment(formatted_txn.txn_date).format('YYYY-MM-DD');
+      formatted_txn.txn_date              = moment(formatted_txn.txn_date).utc().format('YYYY-MM-DD');
 
       let skip_running = formatted_txn.categories.find((c: Category) => c.hidden_on_running_total);
 
