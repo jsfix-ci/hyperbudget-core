@@ -2,7 +2,7 @@ import { Category } from "./category";
 
 /* A formatted version of Transaction for displaying stuff on the frontend only.
 * Numbers here are stringified, so you shouldn't add them
-Also, this gives 2 new members: cat_class (which is the classnames for the categories, and category_names which don't include hidden categories.
+Also, this gives 2 new members: catClass (which is the classnames for the categories, and categoryNames which don't include hidden categories.
 */
 
 export type FormattedTransaction = {
@@ -10,8 +10,8 @@ export type FormattedTransaction = {
   description: string;
   source: string;
 
-  cat_class: string;
-  category_names: string;
+  catClass: string;
+  categoryNames: string;
   categories: Category[],
 
   creditAmount:  number;
@@ -20,8 +20,8 @@ export type FormattedTransaction = {
 
   creditAmountStr:  string;
   debitAmountStr:  string;
-  accountBalance_str:  string;
+  accountBalanceStr:  string;
 
   date: string;
-  running_total_spend: string;
+  runningTotalSpend: string;
 }

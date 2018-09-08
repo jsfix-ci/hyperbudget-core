@@ -65,26 +65,26 @@ export class ReportBusinessLogic {
 export class ReportManager {
   static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
-    let running_total_spend: number = 0;
+    let runningTotalSpend: number = 0;
 
     formatted.forEach((formatted_txn: FormattedTransaction) => {
-      formatted_txn.cat_class      = formatted_txn.categories.map((c: Category) => c.className).join(" ");
-      formatted_txn.category_names = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
+      formatted_txn.catClass      = formatted_txn.categories.map((c: Category) => c.className).join(" ");
+      formatted_txn.categoryNames = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
 
       formatted_txn.creditAmountStr = Utils.format_number(formatted_txn.creditAmount);
       formatted_txn.debitAmountStr  = Utils.format_number(formatted_txn.debitAmount);
-      formatted_txn.accountBalance_str       = Utils.format_number(formatted_txn.accountBalance);
+      formatted_txn.accountBalanceStr       = Utils.format_number(formatted_txn.accountBalance);
 
       formatted_txn.date              = moment(formatted_txn.date).utc().format('YYYY-MM-DD');
 
       let skip_running = formatted_txn.categories.find((c: Category) => c.hidden_on_running_total);
 
       if (formatted_txn.debitAmount && !skip_running) {
-        running_total_spend += Math.abs(formatted_txn.debitAmount);
+        runningTotalSpend += Math.abs(formatted_txn.debitAmount);
       }
 
-      formatted_txn.running_total_spend = Utils.format_number(running_total_spend);
+      formatted_txn.runningTotalSpend = Utils.format_number(runningTotalSpend);
     });
 
     return formatted;
