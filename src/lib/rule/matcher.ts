@@ -51,7 +51,7 @@ export class RuleMatcher {
       throw new Error(`_parse_number_rules: given ${rules} which is not an array`);
     }
 
-    rules.forEach(function (rule: [NumberMatchOp, number]) {
+    rules.forEach((rule: [NumberMatchOp, number]) => {
       if (mode === RuleMatchMode.Strict) {
         match = match && RuleMatcher.parse_number_rule(value, rule);
       } else {
@@ -97,7 +97,7 @@ export class RuleMatcher {
       throw new Error(`_parse_number_rules: given ${rules} which is not an array`);
     }
 
-    rules.forEach(function (rule: [StringMatchOp, string]) {
+    rules.forEach((rule: [StringMatchOp, string]) => {
       if (mode === RuleMatchMode.Strict) {
         match = match && RuleMatcher.parse_string_rule(value, rule);
       } else {

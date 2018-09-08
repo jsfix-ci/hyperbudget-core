@@ -56,11 +56,11 @@
       "type": "object",
       "properties": {
         "txn_day": { "$ref": "#/definitions/NumericMatchConfig" },
-        "txn_desc": { "$ref": "#/definitions/StringMatchConfig" },
-        "txn_type": { "$ref": "#/definitions/StringMatchConfig" },
-        "txn_src": { "$ref": "#/definitions/StringMatchConfig" },
-        "txn_amount_debit": { "$ref": "#/definitions/NumericMatchConfig" },
-        "txn_amount_credit": { "$ref": "#/definitions/NumericMatchConfig" }
+        "description": { "$ref": "#/definitions/StringMatchConfig" },
+        "type": { "$ref": "#/definitions/StringMatchConfig" },
+        "source": { "$ref": "#/definitions/StringMatchConfig" },
+        "debitAmount": { "$ref": "#/definitions/NumericMatchConfig" },
+        "creditAmount": { "$ref": "#/definitions/NumericMatchConfig" }
       }
     }
   },

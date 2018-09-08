@@ -2,59 +2,59 @@ import { Category } from '../types/category';
 
 import moment from 'moment';
 import sha1 from 'sha1';
-import { Options } from './options';
+import { DateFormat } from './enums';
 
 export class Transaction {
   readonly identifier: string;
-  readonly txn_date: Date;
-  readonly txn_type: string = '';
-  readonly acc_sortcode: string = '';
-  readonly acc_number: string = '';
-  readonly txn_desc: string = '';
-  readonly txn_amount_debit: number = 0;
-  readonly txn_amount_credit: number = 0;
-  readonly txn_src: string = 'Unknown';
-  readonly acc_balance: number = 0;
-  month: string = '';
-  readonly org_month: string = '';
+  readonly date: Date;
+  readonly type: string = '';
+  readonly accountSortCode: string = '';
+  readonly accountNumber: string = '';
+  readonly description: string = '';
+  readonly debitAmount: number = 0;
+  readonly creditAmount: number = 0;
+  readonly source: string = 'Unknown';
+  readonly accountBalance: number = 0;
+  calculatedMonth: string = '';
+  readonly calendarMonth: string = '';
   categories: Category[] = [];
   [key: string]: any;
 
   constructor(
     record: {
-      txn_date: string,
-      txn_type?: string,
-      acc_sortcode?: string,
-      acc_number?: string,
-      txn_desc?: string,
-      txn_amount_debit?: number,
-      txn_amount_credit?: number,
-      txn_src?: string,
-      acc_balance?: number,
-      month?: string,
-      org_month?: string,
+      date: string,
+      type?: string,
+      accountSortCode?: string,
+      accountNumber?: string,
+      description?: string,
+      debitAmount?: number,
+      creditAmount?: number,
+      source?: string,
+      accountBalance?: number,
+      calculatedMonth?: string,
+      calendarMonth?: string,
       categories?: Category[],
       identifier?: string,
       [k: string]: any,
     }
   ) {
     let _validators: { [ idx: string ]: any } = {
-      'txn_amount_debit' : function(val: any) { return (!val || !isNaN(val)); },
-      'txn_amount_credit': function(val: any) { return (!val || !isNaN(val)); },
-      'acc_balance'      : function(val: any) { return !isNaN(val); },
+      'debitAmount' : (val: any) => (!val || !isNaN(val)),
+      'creditAmount': (val: any) => (!val || !isNaN(val)),
+      'accountBalance'      : (val: any) => !isNaN(val),
     };
 
     let _filters: { [idx: string]: any } = {
-      'txn_amount_debit': function(val: string | number) { return Number(val); },
-      'txn_amount_credit': function(val: string | number) { return Number(val); },
-      'txn_date': function(val: string) { return this._parse_date(val); }.bind(this),
+      'debitAmount': (val: string | number) => Number(val),
+      'creditAmount': (val: string | number) => Number(val),
+      'date': (val: string) => this.parse_date(val),
     };
 
-    if (record.txn_src) {
-      this.txn_src = record.txn_src;
+    if (record.source) {
+      this.source = record.source;
     }
 
-    Object.keys(record).forEach(function(key: string) {
+    Object.keys(record).forEach((key: string) => {
       this[key] = record[key];
 
       if (_filters[key]) {
@@ -65,32 +65,32 @@ export class Transaction {
           throw new Error(`Property '${key}' (${this[key]}) fails validation: ${_validators[key]} ${this} ${record}`);
         }
       }
-    }.bind(this));
+    });
 
-    this.org_month = moment(this.txn_date).utc().format('YYYYMM');
+    this.calendarMonth = moment(this.date).utc().format('YYYYMM');
 
-    if (!this.month) {
-      this.month = this.org_month;
+    if (!this.calculatedMonth) {
+      this.calculatedMonth = this.calendarMonth;
     }
 
-    this.identifier  = this._build_identifier();
+    this.identifier  = this.build_identifier();
   }
 
   txn_amount() {
-    return this.txn_amount_credit - this.txn_amount_debit;
+    return this.creditAmount - this.debitAmount;
   }
 
-  private _parse_date(txn_date: string): Date {
-    let src = this.txn_src;
+  private parse_date(date: string): Date {
+    let src = this.source;
     let format: string;
 
-    if (!!txn_date.match(/\d{3}-\d{2}-\d{2}T/)) {
-      return moment(txn_date).toDate();
+    if (!!date.match(/\d{3}-\d{2}-\d{2}T/)) {
+      return moment(date).toDate();
     }
 
     format = Transaction._extract_date_format_based_on_source(src);
 
-    return moment(txn_date + " Z", format).toDate();
+    return moment(date + " Z", format).toDate();
   }
 
   private static _extract_date_format_based_on_source(src: string): string {
@@ -98,10 +98,10 @@ export class Transaction {
 
     switch (src) {
       case 'FairFX Corp':
-      format = Options.DATE_FORMAT_SANE;
+      format = DateFormat.Sane;
       break;
       default:
-      format = Options.DATE_FORMAT_EUROPE;
+      format = DateFormat.Europe;
       break;
     }
 
@@ -114,7 +114,7 @@ export class Transaction {
    * Amount + Source + If available, the account balance).  In reality, there
    * is no way to guarantee the uniqueness of a transaction.
    */
-  private _build_identifier(): string {
-    return sha1(this.txn_date.getTime() + this.txn_desc + this.txn_amount() + this.txn_src + (this.acc_balance ? this.acc_balance : '')).toString();
+  private build_identifier(): string {
+    return sha1(this.date.getTime() + this.description + this.txn_amount() + this.source + (this.accountBalance ? this.accountBalance : '')).toString();
   }
 }

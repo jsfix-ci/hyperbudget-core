@@ -1,52 +1,62 @@
 import { Transaction } from './transaction';
 import { CSVParserManager } from './manager/csvparsermanager';
 
-export type ReportOptionsType = { unique_only?: boolean };
+export type ReportOptionsType = { unique?: boolean };
+export type ReportFilter = {
+  month?: string,
+};
 
 export interface Report {
   transactions: Transaction[];
-  transactions_org: Transaction[];
-  transactions_pre_filter: Transaction[];
-  month_filter: string;
+  transactionsInCalendarMonth: Transaction[];
+  unfilteredTransactions: Transaction[];
 
-  filter_month(month: string): void;
-  reset_filter(): void;
-  add_transactions(transactions: Transaction[]): void;
-  apply_filter(): void;
+  filter(filter: ReportFilter): void;
+  filterMonth(month: string): void;
+  applyFilter(): void;
+  resetFilter(): void;
+
+  addTransactions(transactions: Transaction[]): void;
 };
 
 class ReportImpl implements Report {
   transactions: Transaction[];
-  transactions_org: Transaction[];
-  transactions_pre_filter: Transaction[];
-  month_filter: string;
+  transactionsInCalendarMonth: Transaction[];
+  unfilteredTransactions: Transaction[];
+
+  private reportFilter: ReportFilter;
 
   constructor() {
     this.transactions = [];
-    this.transactions_org = [];
-    this.transactions_pre_filter = [];
+    this.transactionsInCalendarMonth = [];
+    this.unfilteredTransactions = [];
+    this.reportFilter = {};
   }
 
-  add_transactions(transactions: Transaction[]) {
-    this.transactions_pre_filter = this.transactions_pre_filter.concat(transactions);
-    this.apply_filter();
+  addTransactions(transactions: Transaction[]) {
+    this.unfilteredTransactions = this.unfilteredTransactions.concat(transactions);
+    this.applyFilter();
   }
 
-  reset_filter(): void {
-    this.transactions = [...this.transactions_pre_filter];
+  resetFilter(): void {
+    this.transactions = [...this.unfilteredTransactions];
   }
 
-  filter_month(month: string): void {
-    this.month_filter = month;
-    this.apply_filter();
+  filter(filter: ReportFilter): void {
+    this.reportFilter = filter;
+    this.applyFilter();
   }
 
-  apply_filter(): void {
-    this.reset_filter();
+  filterMonth(month: string): void {
+    this.filter({ month: month });
+  }
 
-    if(this.month_filter) {
-      this.transactions_org = this.transactions.filter(txn => txn.org_month === this.month_filter);
-      this.transactions = this.transactions.filter(txn => txn.month === this.month_filter);
+  applyFilter(): void {
+    this.resetFilter();
+
+    if (this.reportFilter.month) {
+      this.transactionsInCalendarMonth = this.unfilteredTransactions.filter(txn => txn.calendarMonth === this.reportFilter.month);
+      this.transactions = this.unfilteredTransactions.filter(txn => txn.calculatedMonth === this.reportFilter.month);
     }
   }
 }
@@ -54,7 +64,7 @@ class ReportImpl implements Report {
 export class ReportFactory {
   private _report: ReportImpl;
   private options: ReportOptionsType;
-  private _txnSeenIdentifierMap: { [key: string]: boolean } = {};
+  private txnSeenIdentifierMap: { [key: string]: boolean } = {};
 
   constructor(options?: ReportOptionsType) {
     this.options = options || {};
@@ -65,35 +75,31 @@ export class ReportFactory {
     return this._report;
   }
 
-  set report(r) {
-    this._report = r;
+  fromCSV(csv_text: string, type: string): Promise<void> {
+    return CSVParserManager.parseCSVFile(csv_text, type).then((records: any[]) => {
+      return this.addRecords(records);
+    });
   }
 
-  from_csv(csv_text: string, type: string): Promise<void> {
-    return CSVParserManager.parseCSVFile(csv_text, type).then(function(records: any[]){
-      return this.add_records(records);
-    }.bind(this));
+  fromRecords(records: any[]): Promise<void> {
+    return this.addRecords(records);
   }
 
-  from_records(records: any[]): Promise<void> {
-    return this.add_records(records);
-  }
-
-  add_records(records: any[]): Promise<void> {
+  addRecords(records: any[]): Promise<void> {
     let transactions: Transaction[] = [];
 
-    records.forEach(function(record: any) {
+    records.forEach((record: any) => {
       let txn:Transaction = new Transaction(record);
 
       //unique only
-      if (!this.options.unique_only || !this._txnSeenIdentifierMap[txn.identifier]) {
+      if (!this.options.unique || !this.txnSeenIdentifierMap[txn.identifier]) {
         transactions.push(txn);
       }
 
-      this._txnSeenIdentifierMap[txn.identifier] = true;
-    }.bind(this));
+      this.txnSeenIdentifierMap[txn.identifier] = true;
+    });
 
-    this.report.add_transactions(transactions);
+    this.report.addTransactions(transactions);
 
     return new Promise((resolve, reject) => resolve());
   }

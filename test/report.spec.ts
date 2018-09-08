@@ -15,13 +15,13 @@ describe('ReportFactory', () => {
   it('creates report objects', () => {
     let rf = new ReportFactory();
 
-    return rf.from_records([{
-      'txn_date': '01/01/2017',
-      'txn_amount_credit': '1000',
-      'txn_amount_debit': 0,
-      'acc_balance': '1000',
-      'txn_desc': 'Some Transaction',
-    }]).then(function() {
+    return rf.fromRecords([{
+      'date': '01/01/2017',
+      'creditAmount': '1000',
+      'debitAmount': 0,
+      'accountBalance': '1000',
+      'description': 'Some Transaction',
+    }]).then(() => {
       let report = rf.report;
 
       assert.ok(report);
@@ -29,172 +29,172 @@ describe('ReportFactory', () => {
 
       let transaction = report.transactions[0];
       assert.ok(transaction);
-      expect(transaction).to.have.property('txn_amount_credit');
-      expect(transaction.txn_amount_credit).to.equal(1000);
+      expect(transaction).to.have.property('creditAmount');
+      expect(transaction.creditAmount).to.equal(1000);
       expect(transaction).to.be.an.instanceOf(Transaction);
     });
   });
 
   it('Correctly filters', () => {
     let rf = new ReportFactory();
-    return rf.from_records([
+    return rf.fromRecords([
       {
-        'txn_date': '01/01/2017',
-        'txn_amount_credit': 1000,
-        'txn_amount_debit': 0,
-        'acc_balance': 1000,
-        'txn_desc': 'January Transaction',
+        'date': '01/01/2017',
+        'creditAmount': 1000,
+        'debitAmount': 0,
+        'accountBalance': 1000,
+        'description': 'January Transaction',
       },
       {
-        'txn_date': '01/09/2017',
-        'txn_amount_credit': 0,
-        'txn_amount_debit': 100,
-        'acc_balance': 900,
-        'txn_desc': 'First September Transaction',
+        'date': '01/09/2017',
+        'creditAmount': 0,
+        'debitAmount': 100,
+        'accountBalance': 900,
+        'description': 'First September Transaction',
       },
       {
-        'txn_date': '02/09/2017',
-        'txn_amount_credit': 0,
-        'txn_amount_debit': 50,
-        'acc_balance': 850,
-        'txn_desc': 'Second September Transaction',
+        'date': '02/09/2017',
+        'creditAmount': 0,
+        'debitAmount': 50,
+        'accountBalance': 850,
+        'description': 'Second September Transaction',
       }
-    ]).then(function() {
+    ]).then(() => {
       let report = rf.report;
-      report.filter_month('201709');
+      report.filterMonth('201709');
 
       expect(report).to.have.property('transactions').with.lengthOf(2);
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.true;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.true;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.description==='First September Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.description==='Second September Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.description==='January Transaction';})).to.be.false;
 
-      report.filter_month('201701');
+      report.filterMonth('201701');
       expect(report).to.have.property('transactions').with.lengthOf(1);
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.false;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.false;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.description==='First September Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.description==='Second September Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.description==='January Transaction';})).to.be.true;
 
-      report.filter_month('201801');
+      report.filterMonth('201801');
       expect(report).to.have.property('transactions').with.lengthOf(0);
 
-      rf.add_records([{
-        'txn_date': '01/01/2018',
-        'txn_amount_credit': 1000,
-        'txn_amount_debit': 0,
-        'acc_balance': 1000,
-        'txn_desc': 'January 2018 Transaction',
+      rf.addRecords([{
+        'date': '01/01/2018',
+        'creditAmount': 1000,
+        'debitAmount': 0,
+        'accountBalance': 1000,
+        'description': 'January 2018 Transaction',
       }]);
     }).then(() => {
       let report = rf.report;
 
       expect(report).to.have.property('transactions').with.lengthOf(1);
-      expect(report.transactions[0].txn_desc).to.equal('January 2018 Transaction');
+      expect(report.transactions[0].description).to.equal('January 2018 Transaction');
 
-      report.filter_month('201701');
+      report.filterMonth('201701');
       expect(report).to.have.property('transactions').with.lengthOf(1);
 
-      report.reset_filter();
+      report.resetFilter();
       expect(report).to.have.property('transactions').with.lengthOf(4);
     });
   });
   it('Can be configured to only keep unique transactions', () => {
-    let rf = new ReportFactory({ unique_only: false, });
+    let rf = new ReportFactory({ unique: false, });
 
-    return rf.from_records([
+    return rf.fromRecords([
       {
-        'txn_date': '01/01/2017',
-        'txn_amount_credit': 0,
-        'txn_amount_debit': 1000,
-        'acc_balance': 1000,
-        'txn_desc': 'January Transaction',
+        'date': '01/01/2017',
+        'creditAmount': 0,
+        'debitAmount': 1000,
+        'accountBalance': 1000,
+        'description': 'January Transaction',
       },
       {
-        txn_date: '01/01/2017',
-        txn_amount_credit: 0,
-        txn_amount_debit: 1000,
-        acc_balance: 1000,
-        txn_desc: 'January Transaction',
+        date: '01/01/2017',
+        creditAmount: 0,
+        debitAmount: 1000,
+        accountBalance: 1000,
+        description: 'January Transaction',
       },
       {
-        txn_date: '02/01/2017',
-        txn_amount_credit: 0,
-        txn_amount_debit: 150,
-        acc_balance: 1000,
-        txn_desc: 'January Transaction',
+        date: '02/01/2017',
+        creditAmount: 0,
+        debitAmount: 150,
+        accountBalance: 1000,
+        description: 'January Transaction',
       }
-    ]).then(function() {
+    ]).then(() => {
       let report = rf.report;
       expect(report).to.have.property('transactions').with.lengthOf(3);
-      expect(moment(report.transactions[0].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
-      expect(moment(report.transactions[1].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
-      expect(moment(report.transactions[2].txn_date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
-      rf = new ReportFactory({ unique_only: true, });
+      expect(moment(report.transactions[0].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+      expect(moment(report.transactions[1].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+      expect(moment(report.transactions[2].date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
+      rf = new ReportFactory({ unique: true, });
 
-      return rf.from_records([
+      return rf.fromRecords([
         {
-          'txn_date': '01/01/2017',
-          'txn_amount_credit': 0,
-          'txn_amount_debit': 1000,
-          'txn_desc': 'January Transaction',
+          'date': '01/01/2017',
+          'creditAmount': 0,
+          'debitAmount': 1000,
+          'description': 'January Transaction',
         },
         {
-          txn_date: '01/01/2017',
-          txn_amount_credit: 0,
-          txn_amount_debit: 1000,
-          txn_desc: 'January Transaction',
+          date: '01/01/2017',
+          creditAmount: 0,
+          debitAmount: 1000,
+          description: 'January Transaction',
         },
         {
-          txn_date: '02/01/2017',
-          txn_amount_credit: 0,
-          txn_amount_debit: 150,
-          txn_desc: 'January Transaction',
+          date: '02/01/2017',
+          creditAmount: 0,
+          debitAmount: 150,
+          description: 'January Transaction',
         }
-      ]).then(function() {
+      ]).then(() => {
         let report = rf.report;
 
         expect(report).to.have.property('transactions').with.lengthOf(2);
-        expect(moment(report.transactions[0].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
-        expect(moment(report.transactions[1].txn_date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
+        expect(moment(report.transactions[0].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
+        expect(moment(report.transactions[1].date).isSame(moment('2017-01-02T00:00:00Z'))).to.be.true;
 
-        rf = new ReportFactory({  unique_only: true, });
+        rf = new ReportFactory({  unique: true, });
 
-        return rf.from_records([
+        return rf.fromRecords([
           {
-            'txn_date': '01/01/2017',
-            'txn_amount_credit': 0,
-            'txn_amount_debit': 1000,
-            'acc_balance': 1000,
-            'txn_desc': 'January Transaction',
+            'date': '01/01/2017',
+            'creditAmount': 0,
+            'debitAmount': 1000,
+            'accountBalance': 1000,
+            'description': 'January Transaction',
           },
           {
-            'txn_date': '01/01/2017',
-            'txn_amount_credit': 0,
-            'txn_amount_debit': 1000,
-            'acc_balance':  1000,
-            'txn_desc': 'January Transaction',
+            'date': '01/01/2017',
+            'creditAmount': 0,
+            'debitAmount': 1000,
+            'accountBalance':  1000,
+            'description': 'January Transaction',
           },
           {
-            'txn_date': '01/01/2017',
-            'txn_amount_credit': 0,
-            'txn_amount_debit': 1000,
-            'acc_balance': 2000,
-            'txn_desc': 'January Transaction',
+            'date': '01/01/2017',
+            'creditAmount': 0,
+            'debitAmount': 1000,
+            'accountBalance': 2000,
+            'description': 'January Transaction',
           },
         ]).then(() => {
-          rf.add_records([
+          rf.addRecords([
             {
-              'txn_date': '01/01/2017',
-              'txn_amount_credit': 0,
-              'txn_amount_debit': 1000,
-              'acc_balance': 1000,
-              'txn_desc': 'January Transaction',
+              'date': '01/01/2017',
+              'creditAmount': 0,
+              'debitAmount': 1000,
+              'accountBalance': 1000,
+              'description': 'January Transaction',
             },
           ])
-        }).then(function() {
+        }).then(() => {
           let report = rf.report;
           expect(report).to.have.property('transactions').with.lengthOf(2);
-          expect(report.transactions[0].acc_balance).to.equal(1000);
-          expect(report.transactions[1].acc_balance).to.equal(2000);
+          expect(report.transactions[0].accountBalance).to.equal(1000);
+          expect(report.transactions[1].accountBalance).to.equal(2000);
         })
       });
     });
@@ -203,14 +203,14 @@ describe('ReportFactory', () => {
   it ('can combine many sources', () => {
     let rf = new ReportFactory();
 
-    return rf.add_records([{ 'txn_date': '01/01/2017', 'txn_amount_credit': 0, 'txn_amount_debit': 1000, 'txn_desc': 'Desc 1' }])
-    .then(() => rf.add_records([{ 'txn_date': '01/01/2017', 'txn_amount_credit': 0, 'txn_amount_debit': 1000, 'txn_desc': 'Desc 2' }]))
-    .then(() => rf.from_csv(
+    return rf.addRecords([{ 'date': '01/01/2017', 'creditAmount': 0, 'debitAmount': 1000, 'description': 'Desc 1' }])
+    .then(() => rf.addRecords([{ 'date': '01/01/2017', 'creditAmount': 0, 'debitAmount': 1000, 'description': 'Desc 2' }]))
+    .then(() => rf.fromCSV(
 `"user","department","pan","date","description","client","type","free type","currency","credit","debit","net","fee","local currency","country","mcc"
 "John Doe","","5116********4444","14/12/2017","AUTH: BURGER,,LONDON","","","","GBP","","76.65","76.65","","","GB","5812"
 "John Doe","","5116********4444","14/12/2017","Card Load","","","","GBP","150.00","","150.00","","","","0"`
     , 'fairfx-corp'))
-    .then(() => rf.from_csv(
+    .then(() => rf.fromCSV(
 `Transaction Date,Transaction Type,Sort Code,Account Number,Transaction Description,Debit Amount,Credit Amount,Balance,
 30/01/2017,BGC,'00-00-00,12345678,CELERY,,1234.56,1234.56
 27/01/2017,DEB,'00-00-00,12345678,ASDA SUPERSTORE,18.86,,1215.7
@@ -220,18 +220,18 @@ describe('ReportFactory', () => {
       let report = rf.report;
 
       expect(report).to.have.property('transactions').with.lengthOf(6);
-      expect(report.transactions[0].txn_desc).to.equal('Desc 1');
-      expect(report.transactions[1].txn_desc).to.equal('Desc 2');
-      expect(report.transactions[2].txn_desc).to.equal('AUTH: BURGER,,LONDON');
-      expect(report.transactions[2].txn_amount_debit).to.equal(76.65);
-      expect(report.transactions[3].txn_amount_credit).to.equal(150);
-      expect(report.transactions[3].txn_desc).to.equal('Card Load');
-      expect(report.transactions[4].txn_amount_credit).to.equal(1234.56);
-      expect(report.transactions[4].txn_desc).to.equal('CELERY');
-      expect(report.transactions[4].txn_amount_debit).to.equal(0);
-      expect(report.transactions[5].txn_desc).to.equal('ASDA SUPERSTORE');
-      expect(report.transactions[5].txn_amount_debit).to.equal(18.86);
-      expect(report.transactions[5].txn_amount_credit).to.equal(0);
+      expect(report.transactions[0].description).to.equal('Desc 1');
+      expect(report.transactions[1].description).to.equal('Desc 2');
+      expect(report.transactions[2].description).to.equal('AUTH: BURGER,,LONDON');
+      expect(report.transactions[2].debitAmount).to.equal(76.65);
+      expect(report.transactions[3].creditAmount).to.equal(150);
+      expect(report.transactions[3].description).to.equal('Card Load');
+      expect(report.transactions[4].creditAmount).to.equal(1234.56);
+      expect(report.transactions[4].description).to.equal('CELERY');
+      expect(report.transactions[4].debitAmount).to.equal(0);
+      expect(report.transactions[5].description).to.equal('ASDA SUPERSTORE');
+      expect(report.transactions[5].debitAmount).to.equal(18.86);
+      expect(report.transactions[5].creditAmount).to.equal(0);
     });
   });
 });

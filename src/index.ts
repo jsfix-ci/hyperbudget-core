@@ -1,8 +1,6 @@
 export { Transaction } from "./lib/transaction";
 export { Report, ReportFactory } from './lib/report';
 
-export { Options } from './lib/options';
-
 export { Categoriser } from './lib/categoriser';
 export { Category } from './types/category';
 

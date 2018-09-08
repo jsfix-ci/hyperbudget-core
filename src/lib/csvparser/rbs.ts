@@ -5,31 +5,31 @@ export class RBSCSVParser extends CSVParser {
 
   // XXX Unverified format - word of mouth
   protected txnMap =  {
-    'Date'                : 'txn_date',
-    'Type'                : 'txn_type',
-    'Description'         : 'txn_desc',
+    'Date'                : 'date',
+    'Type'                : 'type',
+    'Description'         : 'description',
     'Value'               : 'txn_amount',
-    'Balance'             : 'acc_balance',
-    'Account Number'      : 'acc_number',
+    'Balance'             : 'accountBalance',
+    'Account Number'      : 'accountNumber',
   };
 
 
   parseCSVRecords(records: any[]): any {
     records = super.parseCSVRecords(records);
-    records.forEach(function(record: any) {
-      record.acc_balance = +record.acc_balance;
+    records.forEach((record: any) => {
+      record.accountBalance = +record.accountBalance;
       record.txn_amount  = +record.txn_amount;
 
       if (record.txn_amount >= 0) {
-        record.txn_amount_credit = +record.txn_amount;
-        record.txn_amount_debit = 0;
+        record.creditAmount = +record.txn_amount;
+        record.debitAmount = 0;
       } else {
-        record.txn_amount_debit = -1 * record.txn_amount;
-        record.txn_amount_credit = 0;
+        record.debitAmount = -1 * record.txn_amount;
+        record.creditAmount = 0;
       }
 
       delete record.txn_amount;
-    }.bind(this));
+    });
 
     return records;
   }

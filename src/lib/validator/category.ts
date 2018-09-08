@@ -56,10 +56,10 @@ const validate_category_rules = (category_rules: any): string[] => {
 
   return validator.validate_complex('category.category_rules', category_rules, {
     txn_day: { rule: validate_category_number_rule, optional: true },
-    txn_desc: { rule:  validate_category_string_rule, optional: true },
-    txn_type: { rule: validate_category_string_rule, optional: true },
-    txn_amount_debit: { rule: validate_category_number_rule, optional: true },
-    txn_amount_credit: { rule: validate_category_number_rule, optional: true },
+    description: { rule:  validate_category_string_rule, optional: true },
+    type: { rule: validate_category_string_rule, optional: true },
+    debitAmount: { rule: validate_category_number_rule, optional: true },
+    creditAmount: { rule: validate_category_number_rule, optional: true },
   });
 };
 

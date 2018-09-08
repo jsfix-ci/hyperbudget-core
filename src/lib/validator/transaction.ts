@@ -8,19 +8,19 @@ export const validate_transaction = (transaction: any): string[] => {
 
   let errors = validator.validate_complex('transaction', transaction, {
     identifier: { rule: validator.is_string_not_empty },
-    txn_date: { rule: validator.is_date },
-    txn_type: { rule: validator.is_string, optional: true, },
-    acc_number: {
+    date: { rule: validator.is_date },
+    type: { rule: validator.is_string, optional: true, },
+    accountNumber: {
       rule: (t) => validator.is_string(t) || validator.is_number(t),
       optional: true
     },
-    txn_desc: { rule: validator.is_string_not_empty },
-    txn_amount_debit: { rule: validator.is_number, optional: true, default: 0 },
-    txn_amount_credit: { rule: validator.is_number, optional: true, default: 0 },
-    txn_src: { rule: validator.is_string_not_empty },
-    acc_balance: { rule: validator.is_number, optional: true },
-    month: { rule: validator.is_string_not_empty },
-    org_month: { rule: validator.is_string_not_empty },
+    description: { rule: validator.is_string_not_empty },
+    debitAmount: { rule: validator.is_number, optional: true, default: 0 },
+    creditAmount: { rule: validator.is_number, optional: true, default: 0 },
+    source: { rule: validator.is_string_not_empty },
+    accountBalance: { rule: validator.is_number, optional: true },
+    calculatedMonth: { rule: validator.is_string_not_empty },
+    calendarMonth: { rule: validator.is_string_not_empty },
   });
 
   if (transaction.categories) {

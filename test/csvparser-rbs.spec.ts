@@ -22,22 +22,22 @@ describe('RBS CSV Parser', () => {
       expect(records).to.have.lengthOf(2);
 
       const firstRecord = records[0];
-      expect(firstRecord.txn_date).to.equal('01/11/2017');
-      expect(firstRecord.txn_type).to.equal('FPI');
-      expect(firstRecord.txn_desc).to.match(/^Hello World/);
-      expect(firstRecord.txn_amount_debit).to.equal(0);
-      expect(firstRecord.txn_amount_credit).to.equal(100);
-      expect(firstRecord.acc_balance).to.equal(1000);
-      expect(firstRecord.acc_number).to.equal('12345678');
+      expect(firstRecord.date).to.equal('01/11/2017');
+      expect(firstRecord.type).to.equal('FPI');
+      expect(firstRecord.description).to.match(/^Hello World/);
+      expect(firstRecord.debitAmount).to.equal(0);
+      expect(firstRecord.creditAmount).to.equal(100);
+      expect(firstRecord.accountBalance).to.equal(1000);
+      expect(firstRecord.accountNumber).to.equal('12345678');
 
       const secondRecord = records[1];
-      expect(secondRecord.txn_date).to.equal('02/11/2017');
-      expect(secondRecord.txn_type).to.equal('DEB');
-      expect(secondRecord.txn_desc).to.match(/^Hello 2/);
-      expect(secondRecord.txn_amount_debit).to.equal(100);
-      expect(secondRecord.txn_amount_credit).to.equal(0);
-      expect(secondRecord.acc_balance).to.equal(900);
-      expect(secondRecord.acc_number).to.equal('12345678');
+      expect(secondRecord.date).to.equal('02/11/2017');
+      expect(secondRecord.type).to.equal('DEB');
+      expect(secondRecord.description).to.match(/^Hello 2/);
+      expect(secondRecord.debitAmount).to.equal(100);
+      expect(secondRecord.creditAmount).to.equal(0);
+      expect(secondRecord.accountBalance).to.equal(900);
+      expect(secondRecord.accountNumber).to.equal('12345678');
     });
   });
 });

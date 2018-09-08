@@ -15,17 +15,17 @@ describe('MidataCSVParser', () => {
 
     return new MidataCSVParser().parseCSVFile(
       buf.toString()
-    ).then(function (records) {
+    ).then((records) => {
       assert.ok(records);
       expect(records.length).to.equal(9);
 
       let record = records[0];
-      expect(record.txn_date).to.equal('27/11/2017');
-      expect(record.txn_type).to.equal('VIS');
-      expect(record.txn_desc).to.match(/^Just Eat/);
-      expect(record.txn_amount_debit).to.equal(14.24);
-      expect(record.txn_amount_credit).to.equal(0);
-      expect(record.acc_balance).to.equal(17.97);
+      expect(record.date).to.equal('27/11/2017');
+      expect(record.type).to.equal('VIS');
+      expect(record.description).to.match(/^Just Eat/);
+      expect(record.debitAmount).to.equal(14.24);
+      expect(record.creditAmount).to.equal(0);
+      expect(record.accountBalance).to.equal(17.97);
     })
   });
 });

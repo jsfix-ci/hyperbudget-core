@@ -43,31 +43,31 @@ describe('HSBCCSVParser', () => {
     expect(records.length).to.equal(5);
 
     let record = records[0];
-    expect(record.txn_date).to.equal('2017-01-01');
-    expect(record.txn_desc).to.equal('XXX');
-    expect(record.txn_amount_credit).to.equal(100);
-    expect(record.txn_amount_debit).to.equal(0);
+    expect(record.date).to.equal('2017-01-01');
+    expect(record.description).to.equal('XXX');
+    expect(record.creditAmount).to.equal(100);
+    expect(record.debitAmount).to.equal(0);
 
     record = records[1];
-    expect(record.txn_date).to.equal('2017-01-02');
-    expect(record.txn_desc).to.equal('XXX2');
-    expect(record.txn_amount_credit).to.equal(0);
-    expect(record.txn_amount_debit).to.equal(200);
+    expect(record.date).to.equal('2017-01-02');
+    expect(record.description).to.equal('XXX2');
+    expect(record.creditAmount).to.equal(0);
+    expect(record.debitAmount).to.equal(200);
 
-    expect(records[2].txn_date).to.equal('2018-01-01');
-    expect(records[2].txn_desc).to.equal('ASDA VIS');
-    expect(records[2].txn_amount_debit).to.equal(50);
-    expect(records[2].txn_type).to.equal('DEB');
+    expect(records[2].date).to.equal('2018-01-01');
+    expect(records[2].description).to.equal('ASDA VIS');
+    expect(records[2].debitAmount).to.equal(50);
+    expect(records[2].type).to.equal('DEB');
 
 
-    expect(records[3].txn_date).to.equal('2018-01-01');
-    expect(records[3].txn_desc).to.equal('CASH BARCLAY JAN01 ASDA@10:50 ATM');
-    expect(records[3].txn_amount_debit).to.equal(40);
-    expect(records[3].txn_type).to.equal('CPT');
+    expect(records[3].date).to.equal('2018-01-01');
+    expect(records[3].description).to.equal('CASH BARCLAY JAN01 ASDA@10:50 ATM');
+    expect(records[3].debitAmount).to.equal(40);
+    expect(records[3].type).to.equal('CPT');
 
-    expect(records[4].txn_date).to.equal('2018-01-01');
-    expect(records[4].txn_desc).to.equal('CASH 12312012 10 Downing Street London VIS');
-    expect(records[4].txn_amount_debit).to.equal(20);
-    expect(records[4].txn_type).to.equal('CPT');
+    expect(records[4].date).to.equal('2018-01-01');
+    expect(records[4].description).to.equal('CASH 12312012 10 Downing Street London VIS');
+    expect(records[4].debitAmount).to.equal(20);
+    expect(records[4].type).to.equal('CPT');
   });
 });

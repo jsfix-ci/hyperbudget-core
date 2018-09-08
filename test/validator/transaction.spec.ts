@@ -10,50 +10,50 @@ describe('Transaction Validation', () => {
     expect(transaction_validator.validate_transaction(txn)).to.deep.equal(
       [
         'transaction.identifier',
-        'transaction.txn_date',
-        'transaction.txn_desc',
-        'transaction.txn_src',
-        'transaction.month',
-        'transaction.org_month',
+        'transaction.date',
+        'transaction.description',
+        'transaction.source',
+        'transaction.calculatedMonth',
+        'transaction.calendarMonth',
       ]
     );
 
-    expect(txn.txn_amount_debit).to.equal(0);
-    expect(txn.txn_amount_credit).to.equal(0);
+    expect(txn.debitAmount).to.equal(0);
+    expect(txn.creditAmount).to.equal(0);
 
     txn = {
       identifier: '',
-      txn_date: '2018-02-29',
-      txn_type: 'DD',
-      acc_number: 123432523,
-      txn_desc: 'Yo man',
-      txn_amount_credit: 0,
-      txn_amount_debit: 10,
-      txn_src: 'lloyds',
-      acc_balance: 200,
-      month: '201807',
-      org_month: '201806',
+      date: '2018-02-29',
+      type: 'DD',
+      accountNumber: 123432523,
+      description: 'Yo man',
+      creditAmount: 0,
+      debitAmount: 10,
+      source: 'lloyds',
+      accountBalance: 200,
+      calculatedMonth: '201807',
+      calendarMonth: '201806',
     };
 
     expect(transaction_validator.validate_transaction(txn)).to.deep.equal(
       [
         'transaction.identifier',
-        'transaction.txn_date',
+        'transaction.date',
       ]
     );
 
     txn = {
       identifier: 'wat',
-      txn_date: '2018-02-28',
-      txn_type: 'DD',
-      acc_number: 123432523,
-      txn_desc: 'Yo man',
-      txn_amount_credit: 0,
-      txn_amount_debit: 10,
-      txn_src: 'lloyds',
-      acc_balance: 200,
-      month: '201807',
-      org_month: '201806',
+      date: '2018-02-28',
+      type: 'DD',
+      accountNumber: 123432523,
+      description: 'Yo man',
+      creditAmount: 0,
+      debitAmount: 10,
+      source: 'lloyds',
+      accountBalance: 200,
+      calculatedMonth: '201807',
+      calendarMonth: '201806',
     };
 
     expect(transaction_validator.validate_transaction(txn)).to.deep.equal([]);
@@ -64,7 +64,7 @@ describe('Transaction Validation', () => {
         id: 'mcdonalds',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=','mcdonalds']] }
+          description: { rules: [['=','mcdonalds']] }
         }
       },
       {
@@ -72,7 +72,7 @@ describe('Transaction Validation', () => {
         id: 'bgk',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'burger king']] }
+          description: { rules: [['=', 'burger king']] }
         }
       },
       {
@@ -80,7 +80,7 @@ describe('Transaction Validation', () => {
         id: 'kfc',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'kfc']] }
+          description: { rules: [['=', 'kfc']] }
         }
       }
     ];
@@ -93,18 +93,18 @@ describe('Transaction Validation', () => {
         id: 'mcdonalds',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['x','mcdonalds']] }
+          description: { rules: [['x','mcdonalds']] }
         }
       },
     ];
 
     expect(transaction_validator.validate_transaction(txn)).to.deep.equal([
-      'category.category_rules.txn_desc',
+      'category.category_rules.description',
     ]);
 
     let txn2 = { ... txn};
 
-    txn.txn_amount_credit = 'nope';
+    txn.creditAmount = 'nope';
     delete txn2.categories;
     txn2.identifier = '';
 
@@ -113,8 +113,8 @@ describe('Transaction Validation', () => {
         id: 'wat',
         idx: 0,
         errors: [
-          'transaction.txn_amount_credit',
-          'category.category_rules.txn_desc',
+          'transaction.creditAmount',
+          'category.category_rules.description',
         ],
       },
       {

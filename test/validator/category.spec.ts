@@ -50,11 +50,11 @@ describe('Category Validation', () => {
       name: 'name',
       category_rules: {
         txn_day: '',
-        txn_amount_debit: {
+        debitAmount: {
           mode: RuleMatchMode.Strict,
           rules: [['>', 10], ['<', 20]],
         },
-        txn_amount_credit: {
+        creditAmount: {
           mode: RuleMatchMode.Flex,
           rules: [['=~', 'what']],
         },
@@ -66,7 +66,7 @@ describe('Category Validation', () => {
       txn_month_modifier: 1,
     })).to.deep.equal([
       'category.category_rules.txn_day',
-      'category.category_rules.txn_amount_credit',
+      'category.category_rules.creditAmount',
     ]);
 
     expect(validator.validate_category({
@@ -77,7 +77,7 @@ describe('Category Validation', () => {
           mode: RuleMatchMode.Flex,
           rules: [['<', 5]],
         },
-        txn_desc: {
+        description: {
           mode: RuleMatchMode.Flex,
           rules: [
             [
@@ -94,23 +94,23 @@ describe('Category Validation', () => {
             ]
           ]
         },
-        txn_type: {
+        type: {
           mode: RuleMatchMode.Flex,
           rules: [
             ['=', 'DD'],
             ['=', 'SO']
           ]
         },
-        txn_src: {
+        source: {
           rules: [
             ['=', 'lloyds']
           ]
         },
-        txn_amount_debit: {
+        debitAmount: {
           mode: RuleMatchMode.Strict,
           rules: [['>', 10], ['<', 20]],
         },
-        txn_amount_credit: {
+        creditAmount: {
           mode: RuleMatchMode.Flex,
           rules: [
             ['>', 0],
@@ -135,13 +135,13 @@ describe('Category Validation', () => {
       id: 'should-fail',
       className: '',
       category_rules: {
-        txn_desc: {
+        description: {
           rules: [
             [ '!!=', 'this should fail' ]
           ]
         }
       }
-    })).to.deep.equal(['category.category_rules.txn_desc'])
+    })).to.deep.equal(['category.category_rules.description'])
   });
 
   expect(validator.validate_categories(
@@ -151,7 +151,7 @@ describe('Category Validation', () => {
         id: '',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=','mcdonalds']] }
+          description: { rules: [['=','mcdonalds']] }
         }
       },
       {
@@ -159,7 +159,7 @@ describe('Category Validation', () => {
         id: '',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'burger king']] }
+          description: { rules: [['=', 'burger king']] }
         }
       },
       {
@@ -167,7 +167,7 @@ describe('Category Validation', () => {
         id: 'kfc',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'kfc']] }
+          description: { rules: [['=', 'kfc']] }
         }
       }
     ]
@@ -198,7 +198,7 @@ describe('Category Validation', () => {
         id: 'mcdonalds',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=','mcdonalds']] }
+          description: { rules: [['=','mcdonalds']] }
         }
       },
       {
@@ -206,7 +206,7 @@ describe('Category Validation', () => {
         id: 'bgk',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'burger king']] }
+          description: { rules: [['=', 'burger king']] }
         }
       },
       {
@@ -214,7 +214,7 @@ describe('Category Validation', () => {
         id: 'kfc',
         className: '',
         category_rules: {
-          txn_desc: { rules: [['=', 'kfc']] }
+          description: { rules: [['=', 'kfc']] }
         }
       }
     ]

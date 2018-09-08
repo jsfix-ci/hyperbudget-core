@@ -133,7 +133,7 @@ describe('Rule Parser', () => {
   });
 
   it ('errors with bad input', () => {
-    expect (function() {
+    expect (() => {
       RuleMatcher.parse_number_rule(100, ['>', NaN])
     }).to.throw(/not numeric/);
   });
