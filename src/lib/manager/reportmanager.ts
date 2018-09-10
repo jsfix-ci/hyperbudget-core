@@ -9,9 +9,38 @@ import * as Utils from '../utils';
 import moment from 'moment';
 import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
-export const reportManager = {
-  countByType: (txns: Transaction[]) => {
+type TransactionGroups = { [key: string]: { transactions: Transaction[], seen: { [key: string]: number } } };
 
+export const reportManager = {
+  /**
+   * groups transactions by type if their type is within the given types
+   * transactions should be ordered by ascending date order
+   */
+  groupByType: (transactions: Transaction[], types: string[]): TransactionGroups => {
+    const groups: TransactionGroups = { };
+    let idx = 0;
+
+    transactions.forEach(txn => {
+      if (types.indexOf(txn.type) !== -1) {
+        if (!groups[txn.type]) {
+          groups[txn.type] = {
+            transactions: [],
+            seen: {},
+          };
+        }
+
+        let group = groups[txn.type];
+
+        if (group.seen[txn.description] === undefined) {
+          group.transactions.push(txn);
+          group.seen[txn.description] = idx++;
+        } else {
+          group.transactions[group.seen[txn.description]] = txn;
+        }
+      }
+    });
+
+    return groups;
   },
 
   generateWebFrontendReport: (txns: Transaction[]): FormattedTransaction[] => {
