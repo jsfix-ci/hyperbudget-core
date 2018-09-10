@@ -1,6 +1,6 @@
 import { Transaction } from './transaction';
 
-import { RuleMatcher } from './rule/matcher';
+import { parse_string_rules, parse_number_rules } from './rule/matcher';
 import { Category } from '../types/category';
 import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
@@ -30,7 +30,7 @@ export class Categoriser {
     ['type', 'description', 'source'].forEach((prop: string) => {
       let match_config: StringMatchConfig = rule[prop];
       if (match_config) {
-        match = match && RuleMatcher.parse_string_rules(txn[prop], match_config);
+        match = match && parse_string_rules(txn[prop], match_config);
       }
     });
 
@@ -38,7 +38,7 @@ export class Categoriser {
       let match_config: NumericMatchConfig = rule[prop];
 
       if (match_config) {
-        match = match && RuleMatcher.parse_number_rules(txn[prop], match_config);
+        match = match && parse_number_rules(txn[prop], match_config);
       }
     });
 
@@ -47,7 +47,7 @@ export class Categoriser {
       let match_config: NumericMatchConfig = rule['txn_day'];
 
       let day: number = moment(txn.date).utc().date();
-      match = match && RuleMatcher.parse_number_rules(day, match_config);
+      match = match && parse_number_rules(day, match_config);
     }
 
     return match;

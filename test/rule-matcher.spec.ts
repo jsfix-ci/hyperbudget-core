@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { RuleMatchMode } from '../src/lib/enums';
-import { RuleMatcher } from '../src/lib/rule/matcher';
+import * as RuleMatcher from '../src/lib/rule/matcher';
 
 describe('Rule Parser', () => {
   let rbs = null;

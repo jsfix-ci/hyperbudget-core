@@ -4,7 +4,7 @@ import { Category } from '../../types/category';
 import { FormattedTransaction } from '../../types/formatted-transaction';
 import { CategoryAmounts } from '../../types/category-amounts';
 
-import { Utils } from '../utils';
+import * as Utils from '../utils';
 import ReportFactory from '../report';
 
 import moment from 'moment';
@@ -63,41 +63,41 @@ export class ReportBusinessLogic {
 }
 
 export class ReportManager {
-  static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
+  static generateWebFrontendReport (txns: Transaction[]): FormattedTransaction[] {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
     let runningTotalSpend: number = 0;
 
-    formatted.forEach((formatted_txn: FormattedTransaction) => {
-      formatted_txn.catClass      = formatted_txn.categories.map((c: Category) => c.className).join(" ");
-      formatted_txn.categoryNames = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
+    formatted.forEach((formattedTxn: FormattedTransaction) => {
+      formattedTxn.catClass      = formattedTxn.categories.map((c: Category) => c.className).join(" ");
+      formattedTxn.categoryNames = formattedTxn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
 
-      formatted_txn.creditAmountStr = Utils.format_number(formatted_txn.creditAmount);
-      formatted_txn.debitAmountStr  = Utils.format_number(formatted_txn.debitAmount);
-      formatted_txn.accountBalanceStr       = Utils.format_number(formatted_txn.accountBalance);
+      formattedTxn.creditAmountStr = Utils.format_number(formattedTxn.creditAmount);
+      formattedTxn.debitAmountStr  = Utils.format_number(formattedTxn.debitAmount);
+      formattedTxn.accountBalanceStr = Utils.format_number(formattedTxn.accountBalance);
 
-      formatted_txn.date              = moment(formatted_txn.date).utc().format('YYYY-MM-DD');
+      formattedTxn.date = moment(formattedTxn.date).utc().format('YYYY-MM-DD');
 
-      let skip_running = formatted_txn.categories.find((c: Category) => c.hidden_on_running_total);
+      let skip_running = formattedTxn.categories.find((c: Category) => c.hidden_on_running_total);
 
-      if (formatted_txn.debitAmount && !skip_running) {
-        runningTotalSpend += Math.abs(formatted_txn.debitAmount);
+      if (formattedTxn.debitAmount && !skip_running) {
+        runningTotalSpend += Math.abs(formattedTxn.debitAmount);
       }
 
-      formatted_txn.runningTotalSpend = Utils.format_number(runningTotalSpend);
+      formattedTxn.runningTotalSpend = Utils.format_number(runningTotalSpend);
     });
 
     return formatted;
   }
 
-  static generate_category_amounts (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]): CategoryAmounts {
-    let cat_amts: CategoryAmounts = {};
+  static generateCategoryAmounts (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]): CategoryAmounts {
+    let categoryAmounts: CategoryAmounts = {};
 
     let cats: Category[] = categoriser.categories
 
     cats.forEach((c: Category) => {
       if (!c.hidden_on_cat_list) {
-        cat_amts[c.name] = { name: c.name, total: 0, className: c.className, count: 0 };
+        categoryAmounts[c.name] = { name: c.name, total: 0, className: c.className, count: 0 };
       }
     });
 
@@ -106,51 +106,57 @@ export class ReportManager {
         // It's the category being listed isn't internal_transfer but the txn cat is, skipit.
         if (! (cat.id !== 'tfr-pers' && Categoriser.is_internal_transfer(txn)) ) {
           if (!cat.hidden_on_cat_list) {
-            (<number>cat_amts[cat.name].total) += txn.creditAmount - txn.debitAmount;
-            cat_amts[cat.name].count++;
+            (<number>categoryAmounts[cat.name].total) += txn.creditAmount - txn.debitAmount;
+            categoryAmounts[cat.name].count++;
           }
         }
       });
     });
 
-    let lloyds_match = org_txns.filter( (txn) => txn.source === 'Lloyds' );
+    let lloydsMatch = txnInCalendarMonth.filter( (txn) => txn.source === 'Lloyds' );
 
-    cat_amts['lloyds_match_in'] = {
+    categoryAmounts['lloyds_match_in'] = {
       name: 'Lloyds Reconciliation - in',
       id: 'lloyds-match-in',
       className: 'lloyds-match',
-      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev + next.creditAmount; }, 0),
-      count: lloyds_match.filter((txn) => txn.creditAmount > 0).length
+      total: lloydsMatch.reduce((prev: number, next: Transaction) => { return prev + next.creditAmount; }, 0),
+      count: lloydsMatch.filter((txn) => txn.creditAmount > 0).length
     };
 
-    cat_amts['lloyds_match_out'] = {
+    categoryAmounts['lloyds_match_out'] = {
       name: 'Lloyds Reconciliation - out',
       id: 'lloyds-match-out',
       className: 'lloyds-match',
-      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev - next.debitAmount; }, 0),
-      count: lloyds_match.filter((txn) => txn.debitAmount > 0).length
+      total: lloydsMatch.reduce((prev: number, next: Transaction) => { return prev - next.debitAmount; }, 0),
+      count: lloydsMatch.filter((txn) => txn.debitAmount > 0).length
     };
 
     //XXX UGLY
-    if (cat_amts['Income'] && cat_amts['Expenditure']) {
-      cat_amts['total_gains'] = { name: 'In-Out', className: 'gains', total: Math.abs(+cat_amts['Income'].total) - Math.abs(+cat_amts['Expenditure'].total), count: 0 };
+    if (categoryAmounts['Income'] && categoryAmounts['Expenditure']) {
+      categoryAmounts['total_gains'] = { name: 'In-Out', className: 'gains', total: Math.abs(+categoryAmounts['Income'].total) - Math.abs(+categoryAmounts['Expenditure'].total), count: 0 };
     }
 
-    return cat_amts;
+    return categoryAmounts;
   }
 
-  static generate_category_amounts_frontend (categoriser: Categoriser, txns: Transaction[], org_txns: Transaction[]): CategoryAmounts {
-    let cat_amts = ReportManager.generate_category_amounts(categoriser, txns, org_txns);
-    let filtered:any  = Object.keys(cat_amts).map((k) => {
-      let filtered:any = cat_amts[k];
-      filtered.total = Utils.format_number(filtered.total);
-      return filtered;
+  /**
+   * Turns categoryAmounts objects (`{ id => id, name, className, total, count }` into an array of {id, name, className, total, count})
+   * @param categoriser Categoriser
+   * @param txns Transactions in view
+   * @param txnInCalendarMonth Transactions in calendar month, just for lloyds hack
+   */
+  static generateCategoryAmountsFrontend (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]) {
+    let categoryAmounts = ReportManager.generateCategoryAmounts(categoriser, txns, txnInCalendarMonth);
+    let filtered = Object.keys(categoryAmounts).map((k) => {
+      let catAmt = categoryAmounts[k];
+      catAmt.total = Utils.format_number(+catAmt.total);
+      return catAmt;
     });
 
-    return filtered.filter((c: any) => c.total && c.total != '0.00');
+    return filtered.filter(c => c.total && c.total != '0.00');
   }
 
-  static generate_monthly_breakdown (txns: Transaction[], months: string[]): Breakdown {
+  static generateMonthlyBreakdown (txns: Transaction[], months: string[]): Breakdown {
     let breakdown: Breakdown = {};
 
     months.forEach((month: string) => {
@@ -191,8 +197,8 @@ export class ReportManager {
     return breakdown;
   }
 
-  static generate_monthly_breakdown_frontend (txns: Transaction[], months: string[]): BreakdownFormatted[] {
-    let breakdown = ReportManager.generate_monthly_breakdown(txns, months);
+  static generateMonthlyBreakdownFrontend (txns: Transaction[], months: string[]): BreakdownFormatted[] {
+    let breakdown = ReportManager.generateMonthlyBreakdown(txns, months);
 
     return Object.keys(breakdown).map((k) => {
       return {
