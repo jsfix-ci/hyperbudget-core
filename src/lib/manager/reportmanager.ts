@@ -5,13 +5,16 @@ import { FormattedTransaction } from '../../types/formatted-transaction';
 import { CategoryAmounts } from '../../types/category-amounts';
 
 import * as Utils from '../utils';
-import ReportFactory from '../report';
 
 import moment from 'moment';
 import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
-export class ReportManager {
-  static generateWebFrontendReport (txns: Transaction[]): FormattedTransaction[] {
+export const reportManager = {
+  countByType: (txns: Transaction[]) => {
+
+  },
+
+  generateWebFrontendReport: (txns: Transaction[]): FormattedTransaction[] => {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
     let runningTotalSpend: number = 0;
 
@@ -36,9 +39,9 @@ export class ReportManager {
     });
 
     return formatted;
-  }
+  },
 
-  static generateCategoryAmounts (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]): CategoryAmounts {
+  generateCategoryAmounts: (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]): CategoryAmounts => {
     let categoryAmounts: CategoryAmounts = {};
 
     let cats: Category[] = categoriser.categories
@@ -85,7 +88,7 @@ export class ReportManager {
     }
 
     return categoryAmounts;
-  }
+  },
 
   /**
    * Turns categoryAmounts objects (`{ id => id, name, className, total, count }` into an array of {id, name, className, total, count})
@@ -93,8 +96,8 @@ export class ReportManager {
    * @param txns Transactions in view
    * @param txnInCalendarMonth Transactions in calendar month, just for lloyds hack
    */
-  static generateCategoryAmountsFrontend (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]) {
-    let categoryAmounts = ReportManager.generateCategoryAmounts(categoriser, txns, txnInCalendarMonth);
+  generateCategoryAmountsFrontend: (categoriser: Categoriser, txns: Transaction[], txnInCalendarMonth: Transaction[]) => {
+    let categoryAmounts = reportManager.generateCategoryAmounts(categoriser, txns, txnInCalendarMonth);
     let filtered = Object.keys(categoryAmounts).map((k) => {
       let catAmt = categoryAmounts[k];
       catAmt.total = Utils.format_number(+catAmt.total);
@@ -102,9 +105,9 @@ export class ReportManager {
     });
 
     return filtered.filter(c => c.total && c.total != '0.00');
-  }
+  },
 
-  static generateMonthlyBreakdown (txns: Transaction[], months: string[]): Breakdown {
+  generateMonthlyBreakdown: (txns: Transaction[], months: string[]): Breakdown => {
     let breakdown: Breakdown = {};
 
     months.forEach((month: string) => {
@@ -143,10 +146,10 @@ export class ReportManager {
 
 
     return breakdown;
-  }
+  },
 
-  static generateMonthlyBreakdownFrontend (txns: Transaction[], months: string[]): BreakdownFormatted[] {
-    let breakdown = ReportManager.generateMonthlyBreakdown(txns, months);
+  generateMonthlyBreakdownFrontend: (txns: Transaction[], months: string[]): BreakdownFormatted[] => {
+    let breakdown = reportManager.generateMonthlyBreakdown(txns, months);
 
     return Object.keys(breakdown).map((k) => {
       return {
