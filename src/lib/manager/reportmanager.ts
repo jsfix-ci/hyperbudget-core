@@ -10,58 +10,6 @@ import ReportFactory from '../report';
 import moment from 'moment';
 import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
-/**
- * Temporary business logic wrapper to aid refactoring
- */
-export class ReportBusinessLogic {
-  rf: ReportFactory;
-
-  constructor() {
-    this.rf = new ReportFactory();
-  }
-  addTransactionsFromObject (records: any[]) {
-    return this.rf.addRecords(records).then(() => (
-      this.translatedTransactions()
-    ));
-  }
-  addTransactionsFromCSV (csv_text: string, source: string) {
-    return this.rf.fromCSV(csv_text, source).then(() => (
-      this.translatedTransactions()
-    ))
-  }
-  categoriseTransactions(categories: Category[]) {
-    const categoriser = new Categoriser(categories);
-    return categoriser.categorise_transactions(this.rf.report.transactions).then(() => (
-      this.translatedTransactions()
-    ));
-  }
-  filterTransactionsByMonth(month: string) {
-    this.rf.report.filterMonth(month);
-    return this.translatedTransactions();
-  }
-  resetFilter() {
-    this.rf.report.resetFilter();
-    return this.translatedTransactions();
-  }
-  translatedTransactions() {
-    return this.rf.report.transactions.map((txn: Transaction) => ({
-      identifier: txn.identifier,
-      date: txn.date,
-      type: txn.type,
-      description: txn.description,
-      accountSortcode: txn.accountSortCode,
-      accountNumber: txn.accountNumber,
-      accountBalance: txn.accountBalance,
-      debitAmount: txn.debitAmount,
-      creditAmount: txn.creditAmount,
-      source: txn.source,
-      categoryIds: txn.categories.map(cat => cat.id),
-      calculatedMonth: txn.calculatedMonth,
-      calendarMonth: txn.calendarMonth,
-    }));
-  }
-}
-
 export class ReportManager {
   static generateWebFrontendReport (txns: Transaction[]): FormattedTransaction[] {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
