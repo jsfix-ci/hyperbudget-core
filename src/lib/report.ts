@@ -17,6 +17,7 @@ export interface Report {
   resetFilter(): void;
 
   addTransactions(transactions: Transaction[]): void;
+  removeTransactions(transactionIds: string[]): void;
 };
 
 class ReportImpl implements Report {
@@ -58,6 +59,13 @@ class ReportImpl implements Report {
       this.transactionsInCalendarMonth = this.unfilteredTransactions.filter(txn => txn.calendarMonth === this.reportFilter.month);
       this.transactions = this.unfilteredTransactions.filter(txn => txn.calculatedMonth === this.reportFilter.month);
     }
+  }
+
+  removeTransactions(transactionsToRemove: string[]) {
+    this.unfilteredTransactions = this.unfilteredTransactions.filter(txn => (
+      transactionsToRemove.indexOf(txn.identifier) === -1
+    ));
+    this.applyFilter();
   }
 }
 
@@ -102,6 +110,10 @@ export class ReportFactory {
     this.report.addTransactions(transactions);
 
     return new Promise((resolve, reject) => resolve());
+  }
+
+  removeRecords(transactionIdentifiers: string[]) {
+    this.report.removeTransactions(transactionIdentifiers);
   }
 }
 

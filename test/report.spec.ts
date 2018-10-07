@@ -234,4 +234,27 @@ describe('ReportFactory', () => {
       expect(report.transactions[5].creditAmount).to.equal(0);
     });
   });
+  it ('can remove transactions', () => {
+    let rf = new ReportFactory();
+    return rf.addRecords([{
+      date: '2018-01-01',
+      identifier: 'a1',
+    }, {
+      date: '2018-01-01',
+      identifier: 'a2',
+    }, {
+      date: '2018-01-03',
+      identifier: 'a3',
+    }, {
+      date: '2018-01-04',
+      identifier: 'a4',
+    }])
+    .then(() => {
+      rf.removeRecords(['a2','a3','b'])
+    })
+    .then(() => {
+      expect(rf.report.transactions.map(t => t.identifier))
+      .to.deep.equal(['a1','a4'])
+    })
+  })
 });

@@ -73,7 +73,9 @@ export class Transaction {
       this.calculatedMonth = this.calendarMonth;
     }
 
-    this.identifier  = this.build_identifier();
+    if (!this.identifier) {
+      this.identifier  = this.build_identifier();
+    }
   }
 
   txn_amount() {
