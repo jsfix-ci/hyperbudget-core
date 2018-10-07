@@ -6,6 +6,8 @@ Also, this gives 2 new members: catClass (which is the classnames for the catego
 */
 
 export type FormattedTransaction = {
+  identifier: string;
+
   type: string;
   description: string;
   source: string;
