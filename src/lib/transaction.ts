@@ -14,7 +14,7 @@ export class Transaction {
   readonly debitAmount: number = 0;
   readonly creditAmount: number = 0;
   readonly source: string = 'Unknown';
-  readonly accountBalance: number = 0;
+  readonly accountBalance: number = null;
   calculatedMonth: string = '';
   readonly calendarMonth: string = '';
   categories: Category[] = [];
