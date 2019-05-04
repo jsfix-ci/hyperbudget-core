@@ -13,7 +13,7 @@ describe('ReportFactory', () => {
   });
 
   it('creates report objects', () => {
-    let rf = new ReportFactory();
+    const rf = new ReportFactory();
 
     return rf.fromRecords([{
       'date': '01/01/2017',
@@ -22,12 +22,12 @@ describe('ReportFactory', () => {
       'accountBalance': '1000',
       'description': 'Some Transaction',
     }]).then(() => {
-      let report = rf.report;
+      const report = rf.report;
 
       assert.ok(report);
       expect(report).to.have.property('transactions').with.lengthOf(1);
 
-      let transaction = report.transactions[0];
+      const transaction = report.transactions[0];
       assert.ok(transaction);
       expect(transaction).to.have.property('creditAmount');
       expect(transaction.creditAmount).to.equal(1000);
@@ -36,7 +36,7 @@ describe('ReportFactory', () => {
   });
 
   it('Correctly filters', () => {
-    let rf = new ReportFactory();
+    const rf = new ReportFactory();
     return rf.fromRecords([
       {
         'date': '01/01/2017',
@@ -60,7 +60,7 @@ describe('ReportFactory', () => {
         'description': 'Second September Transaction',
       }
     ]).then(() => {
-      let report = rf.report;
+      const report = rf.report;
       report.filterMonth('201709');
 
       expect(report).to.have.property('transactions').with.lengthOf(2);
@@ -85,7 +85,7 @@ describe('ReportFactory', () => {
         'description': 'January 2018 Transaction',
       }]);
     }).then(() => {
-      let report = rf.report;
+      const report = rf.report;
 
       expect(report).to.have.property('transactions').with.lengthOf(1);
       expect(report.transactions[0].description).to.equal('January 2018 Transaction');
@@ -123,7 +123,7 @@ describe('ReportFactory', () => {
         description: 'January Transaction',
       }
     ]).then(() => {
-      let report = rf.report;
+      const report = rf.report;
       expect(report).to.have.property('transactions').with.lengthOf(3);
       expect(moment(report.transactions[0].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
       expect(moment(report.transactions[1].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
@@ -150,7 +150,7 @@ describe('ReportFactory', () => {
           description: 'January Transaction',
         }
       ]).then(() => {
-        let report = rf.report;
+        const report = rf.report;
 
         expect(report).to.have.property('transactions').with.lengthOf(2);
         expect(moment(report.transactions[0].date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
@@ -191,7 +191,7 @@ describe('ReportFactory', () => {
             },
           ])
         }).then(() => {
-          let report = rf.report;
+          const report = rf.report;
           expect(report).to.have.property('transactions').with.lengthOf(2);
           expect(report.transactions[0].accountBalance).to.equal(1000);
           expect(report.transactions[1].accountBalance).to.equal(2000);
@@ -201,7 +201,7 @@ describe('ReportFactory', () => {
   });
 
   it ('can combine many sources', () => {
-    let rf = new ReportFactory();
+    const rf = new ReportFactory();
 
     return rf.addRecords([{ 'date': '01/01/2017', 'creditAmount': 0, 'debitAmount': 1000, 'description': 'Desc 1' }])
     .then(() => rf.addRecords([{ 'date': '01/01/2017', 'creditAmount': 0, 'debitAmount': 1000, 'description': 'Desc 2' }]))
@@ -217,7 +217,7 @@ describe('ReportFactory', () => {
 `
     , 'lloyds'))
     .then(() => {
-      let report = rf.report;
+      const report = rf.report;
 
       expect(report).to.have.property('transactions').with.lengthOf(6);
       expect(report.transactions[0].description).to.equal('Desc 1');
@@ -235,7 +235,7 @@ describe('ReportFactory', () => {
     });
   });
   it ('can remove transactions', () => {
-    let rf = new ReportFactory();
+    const rf = new ReportFactory();
     return rf.addRecords([{
       date: '2018-01-01',
       identifier: 'a1',
@@ -256,5 +256,36 @@ describe('ReportFactory', () => {
       expect(rf.report.transactions.map(t => t.identifier))
       .to.deep.equal(['a1','a4'])
     })
-  })
+  });
+  it ('can filter by type', () => {
+    const rf = new ReportFactory();
+    return rf.addRecords([{
+      date: '2018-01-01T05:00:00Z',
+      type: 'DD',
+      description: 'TXN 1',
+    },
+    {
+      date: '2018-01-01T05:00:00Z',
+      type: 'DEB',
+      description: 'TXN2',
+    },
+    {
+      date: '2018-02-01T05:00:00Z',
+      type: 'DD',
+      description: 'TXN3',
+    }]).then(() => {
+      const report = rf.report;
+      report.filterType('dd');
+
+      expect(report.transactions.length).to.equal(2);
+      expect(report.transactions[0].description).to.equal('TXN 1');
+      expect(report.transactions[1].description).to.equal('TXN3');
+
+      report.resetFilter();
+      report.filterType('DD').filterMonth('201801');
+
+      expect(report.transactions.length).to.equal(1);
+      expect(report.transactions[0].description).to.equal('TXN 1');
+    });
+  });
 });

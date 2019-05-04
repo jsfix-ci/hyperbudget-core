@@ -4,6 +4,7 @@ import { CSVParserManager } from './manager/csvparsermanager';
 export type ReportOptionsType = { unique?: boolean };
 export type ReportFilter = {
   month?: string,
+  type?: string,
 };
 
 export interface Report {
@@ -12,12 +13,13 @@ export interface Report {
   unfilteredTransactions: Transaction[];
 
   filter(filter: ReportFilter): void;
-  filterMonth(month: string): void;
-  applyFilter(): void;
-  resetFilter(): void;
+  filterMonth(month: string): Report;
+  filterType(type: string): Report;
+  applyFilter(): Report;
+  resetFilter(): Report;
 
-  addTransactions(transactions: Transaction[]): void;
-  removeTransactions(transactionIds: string[]): void;
+  addTransactions(transactions: Transaction[]): Report;
+  removeTransactions(transactionIds: string[]): Report;
 };
 
 class ReportImpl implements Report {
@@ -34,38 +36,62 @@ class ReportImpl implements Report {
     this.reportFilter = {};
   }
 
-  addTransactions(transactions: Transaction[]) {
+  addTransactions(transactions: Transaction[]): Report {
     this.unfilteredTransactions = this.unfilteredTransactions.concat(transactions);
     this.applyFilter();
+
+    return this;
   }
 
-  resetFilter(): void {
+  resetFilter(): Report {
     this.transactions = [...this.unfilteredTransactions];
+    return this;
   }
 
-  filter(filter: ReportFilter): void {
-    this.reportFilter = filter;
-    this.applyFilter();
+  filter(filter: ReportFilter): Report {
+    this.reportFilter = {
+      ...this.reportFilter,
+      ...filter
+    };
+
+    return this.applyFilter();
   }
 
-  filterMonth(month: string): void {
+  filterMonth(month: string): Report {
     this.filter({ month: month });
+
+    return this;
   }
 
-  applyFilter(): void {
+  filterType(type: string): Report {
+    this.filter({ type: type });
+
+    return this;
+  }
+
+  applyFilter(): Report {
     this.resetFilter();
 
     if (this.reportFilter.month) {
       this.transactionsInCalendarMonth = this.unfilteredTransactions.filter(txn => txn.calendarMonth === this.reportFilter.month);
-      this.transactions = this.unfilteredTransactions.filter(txn => txn.calculatedMonth === this.reportFilter.month);
+      this.transactions = this.transactions.filter(txn => txn.calculatedMonth === this.reportFilter.month);
     }
+    if (this.reportFilter.type) {
+      this.transactions = this.transactions.filter(txn => (
+        txn.type.toLowerCase() === this.reportFilter.type.toLowerCase()
+      ));
+    }
+
+    return this;
   }
 
-  removeTransactions(transactionsToRemove: string[]) {
+  removeTransactions(transactionsToRemove: string[]): Report {
     this.unfilteredTransactions = this.unfilteredTransactions.filter(txn => (
       transactionsToRemove.indexOf(txn.identifier) === -1
     ));
     this.applyFilter();
+
+    return this;
   }
 }
 

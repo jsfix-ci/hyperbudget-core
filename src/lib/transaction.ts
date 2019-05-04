@@ -68,10 +68,7 @@ export class Transaction {
     });
 
     this.calendarMonth = moment(this.date).utc().format('YYYYMM');
-
-    if (!this.calculatedMonth) {
-      this.calculatedMonth = this.calendarMonth;
-    }
+    this.calculatedMonth = this.calendarMonth;
 
     if (!this.identifier) {
       this.identifier  = this.build_identifier();
