@@ -27,7 +27,7 @@ export class CSVParser {
       this.sanitiseInput(input).then((csv_text: string) => {
         parse(
           csv_text, { columns: true },
-          (err: string, records: any[]) => {
+          (err: Error, records: any[]) => {
             if (err) {
               reject(err);
             }

@@ -16,9 +16,9 @@ export class MidataCSVParser extends CSVParser {
     return new Promise((resolve, reject) => {
       super.sanitiseInput(csv_filename).then((input: string) => {
         input = input.replace(/^\s+(.*)/m, '$1'); /* Stupid empty space before first line */
-        input = input.replace(/^\n$/m, ''); /* Empty line */
-        input = input.replace(/^$/m, ''); /* Empty line */
         input = input.replace(/^Arranged overdraft limit.*/m, ''); /* Stupidity */
+        input = input.replace(/^\n$/gm, ''); /* Empty line */
+        input = input.replace(/^$/gm, ''); /* Empty line */
 
         resolve(input);
       });
