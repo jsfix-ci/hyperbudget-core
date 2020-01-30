@@ -1,6 +1,7 @@
-import { NumericMatchConfig, StringMatchConfig } from "./match-config";
+import { NumericMatchConfig, StringMatchConfig, IdentifierMatchConfig } from "./match-config";
 
 export type CategoryRule = {
+  identifier?: IdentifierMatchConfig,
   txn_day?: NumericMatchConfig,
   description?: StringMatchConfig;
   type?: StringMatchConfig;

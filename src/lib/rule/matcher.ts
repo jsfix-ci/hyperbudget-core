@@ -1,5 +1,8 @@
 import { RuleMatchMode } from '../enums';
-import { NumericMatchConfig, StringMatchConfig, NumberMatchOp, StringMatchOp } from '../../types/match-config';
+import {
+  NumericMatchConfig, StringMatchConfig,
+  IdentifierMatchOp, NumberMatchOp, StringMatchOp
+} from '../../types/match-config';
 
 export const parse_number_rule = (value: number, [op, comparison]: [NumberMatchOp, number]): boolean => {
   if (isNaN(value)) {
@@ -92,7 +95,7 @@ export const parse_string_rules = (value: string, match_config: StringMatchConfi
 
   if (!Array.isArray(rules)) {
     console.error(rules);
-    throw new Error(`_parse_number_rules: given ${rules} which is not an array`);
+    throw new Error(`_parse_string_rules: given ${rules} which is not an array`);
   }
 
   rules.forEach((rule: [StringMatchOp, string]) => {
@@ -106,3 +109,11 @@ export const parse_string_rules = (value: string, match_config: StringMatchConfi
   return match;
 };
 
+
+export const parse_identifier_rule = (value: string, [op, comparison]: [IdentifierMatchOp, string]): boolean => {
+  if (op == '=') {
+    return value === comparison;
+  }
+
+  return false;
+};

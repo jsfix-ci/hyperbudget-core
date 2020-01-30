@@ -10,5 +10,10 @@ export type StringMatchConfig = {
   rules: [ StringMatchOp, string ][],
 };
 
+export type IdentifierMatchConfig = {
+  rules: [IdentifierMatchOp, string],
+}
+
 export type NumberMatchOp = '='|'!='|'>'|'<'|'>='|'<=';
 export type StringMatchOp = '='|'!='|'=~'|'!~';
+export type IdentifierMatchOp = '=';
