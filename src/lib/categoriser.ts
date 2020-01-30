@@ -1,6 +1,6 @@
 import { Transaction } from './transaction';
 
-import { parse_string_rules, parse_number_rules } from './rule/matcher';
+import { parse_string_rules, parse_number_rules, parse_identifier_rule } from './rule/matcher';
 import { Category } from '../types/category';
 import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
@@ -26,6 +26,14 @@ export class Categoriser {
 
   static transaction_matches_rule(txn: Transaction, rule: CategoryRule): boolean {
     let match: boolean = true;
+
+    // identifier match is most important
+    if (
+      rule.identifier &&
+      parse_identifier_rule(txn.identifier, rule.identifier.rules)
+    ) {
+      return true;
+    }
 
     ['type', 'description', 'source'].forEach((prop: string) => {
       let match_config: StringMatchConfig = rule[prop];

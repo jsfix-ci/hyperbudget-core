@@ -11,10 +11,10 @@ describe('Categoriser', () => {
     let transaction = new Transaction({
       date            : '01/01/2017',
       type            : 'DD',
-      description            : 'MY DESCRIPTION',
-      creditAmount   : 0,
-      debitAmount    : 0,
-      accountBalance         : 0,
+      description     : 'MY DESCRIPTION',
+      creditAmount    : 0,
+      debitAmount     : 0,
+      accountBalance  : 0,
     });
 
     expect(
@@ -42,10 +42,10 @@ describe('Categoriser', () => {
     transaction = new Transaction({
       date            : '01/01/2017',
       type            : 'FPI',
-      description            : 'SALARY',
-      creditAmount   : 3000,
-      debitAmount    : 0,
-      accountBalance         : 3000,
+      description     : 'SALARY',
+      creditAmount    : 3000,
+      debitAmount     : 0,
+      accountBalance  : 3000,
     });
 
     expect(
@@ -82,10 +82,10 @@ describe('Categoriser', () => {
     transaction = new Transaction({
       date            : '01/01/2017',
       type            : 'FPI',
-      description            : 'TFR J DOE',
-      creditAmount   : 2000,
-      debitAmount    : 0,
-      accountBalance         : 2000,
+      description     : 'TFR J DOE',
+      creditAmount    : 2000,
+      debitAmount     : 0,
+      accountBalance  : 2000,
     });
 
     expect(
@@ -176,7 +176,12 @@ describe('Categoriser', () => {
           "rules": [
             ["=", "DD"]
           ]
-        }
+        },
+        "identifier": {
+          "rules": [
+            "=", "ABC"
+          ]
+        },
       },
       "className": "cat-bills",
       "id": "bills"
@@ -269,9 +274,9 @@ describe('Categoriser', () => {
       new Transaction({
         date            : '01/01/2017',
         type            : 'FPO',
-        description            : 'TFR J DOE',
-        creditAmount   : 0,
-        debitAmount    : 2000,
+        description     : 'TFR J DOE',
+        creditAmount    : 0,
+        debitAmount     : 2000,
       }),
       new Transaction({
         date: '01/01/2017',
@@ -329,6 +334,14 @@ describe('Categoriser', () => {
         debitAmount: 0,
         creditAmount: 50,
       }),
+      new Transaction({
+        date: '31/01/2020',
+        type: 'FPO',
+        description: 'BREXIT BILL',
+        debitAmount: 0.50,
+        creditAmount: 0,
+        identifier: 'ABC',
+      })
     ];
 
     return categoriser.categorise_transactions(transactions).then(() => {
@@ -351,6 +364,7 @@ describe('Categoriser', () => {
       expect(transactions[7].categories.map((cat) => cat.id)).to.deep.equal(['income', 'main-income']);
       expect(transactions[8].calculatedMonth).to.equal('201712');
       expect(transactions[8].categories.map((cat) => cat.id)).to.deep.equal(['income']);
+      expect(transactions[9].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
     });
   });
 });
