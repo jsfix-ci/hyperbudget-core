@@ -1,6 +1,6 @@
 import { Transaction } from './transaction';
 
-import { parse_string_rules, parse_number_rules, parse_identifier_rule } from './rule/matcher';
+import { parse_string_rules, parse_number_rules, parse_identifier_rules } from './rule/matcher';
 import { Category } from '../types/category';
 import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
@@ -30,7 +30,7 @@ export class Categoriser {
     // identifier match is most important
     if (
       rule.identifier &&
-      parse_identifier_rule(txn.identifier, rule.identifier.rules)
+      parse_identifier_rules(txn.identifier, rule.identifier)
     ) {
       return true;
     }
