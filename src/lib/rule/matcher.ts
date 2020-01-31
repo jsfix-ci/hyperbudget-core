@@ -1,6 +1,6 @@
 import { RuleMatchMode } from '../enums';
 import {
-  NumericMatchConfig, StringMatchConfig,
+  IdentifierMatchConfig, NumericMatchConfig, StringMatchConfig,
   IdentifierMatchOp, NumberMatchOp, StringMatchOp
 } from '../../types/match-config';
 
@@ -116,4 +116,23 @@ export const parse_identifier_rule = (value: string, [op, comparison]: [Identifi
   }
 
   return false;
+};
+
+export const parse_identifier_rules = (
+  value: string,
+  match_config: IdentifierMatchConfig
+): boolean => {
+  let match: boolean = false;
+  let rules: [IdentifierMatchOp, string][] = match_config.rules;
+
+  if (!Array.isArray(rules)) {
+    console.error(rules);
+    throw new Error(`_parse_identifier_rules: given ${rules} which is not an array`);
+  }
+
+  rules.forEach((rule: [IdentifierMatchOp, string]) => {
+    match = match || parse_string_rule(value, rule);
+  });
+
+  return match;
 };

@@ -179,7 +179,8 @@ describe('Categoriser', () => {
         },
         "identifier": {
           "rules": [
-            "=", "ABC"
+            ["=", "ABC"],
+            ["=", "CDE"],
           ]
         },
       },
@@ -341,6 +342,14 @@ describe('Categoriser', () => {
         debitAmount: 0.50,
         creditAmount: 0,
         identifier: 'ABC',
+      }),
+      new Transaction({
+        date: '31/01/2020',
+        type: 'DD',
+        description: 'BUYING EUROS',
+        debitAmount: 5000,
+        creditAmount: 0,
+        identifier: 'CDE',
       })
     ];
 
@@ -365,6 +374,7 @@ describe('Categoriser', () => {
       expect(transactions[8].calculatedMonth).to.equal('201712');
       expect(transactions[8].categories.map((cat) => cat.id)).to.deep.equal(['income']);
       expect(transactions[9].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
+      expect(transactions[10].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
     });
   });
 });
