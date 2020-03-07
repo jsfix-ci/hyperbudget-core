@@ -1,10 +1,9 @@
 import { Transaction } from './transaction';
+
 import { parse_string_rules, parse_number_rules, parse_identifier_rules } from './rule/matcher';
 import { Category } from '../types/category';
 import { CategoryRule } from '../types/category-rule';
 import { NumericMatchConfig, StringMatchConfig } from '../types/match-config';
-
-import { RuleMatchMode } from '../lib/enums';
 
 import moment from 'moment';
 
@@ -26,15 +25,7 @@ export class Categoriser {
   }
 
   static transaction_matches_rule(txn: Transaction, rule: CategoryRule): boolean {
-    let mode = rule['mode'] || RuleMatchMode.Strict;
-    // Start with true for strict mode (if anything doesn't match it's false,
-    // if all match it's true) or false for flex mode (if any of the things
-    // match it's true, if none match it's false)
-    let match: boolean = mode == RuleMatchMode.Strict;
-
-    const _cmp = (first: boolean, second: boolean) => (
-      mode === RuleMatchMode.Strict ? first && second : first || second
-    );
+    let match: boolean = true;
 
     // identifier match is most important
     if (
@@ -47,7 +38,7 @@ export class Categoriser {
     ['type', 'description', 'source'].forEach((prop: string) => {
       let match_config: StringMatchConfig = rule[prop];
       if (match_config) {
-        match = _cmp(match, parse_string_rules(txn[prop], match_config));
+        match = match && parse_string_rules(txn[prop], match_config);
       }
     });
 
@@ -55,7 +46,7 @@ export class Categoriser {
       let match_config: NumericMatchConfig = rule[prop];
 
       if (match_config) {
-        match = _cmp(match, parse_number_rules(txn[prop], match_config));
+        match = match && parse_number_rules(txn[prop], match_config);
       }
     });
 
@@ -64,7 +55,7 @@ export class Categoriser {
       let match_config: NumericMatchConfig = rule['txn_day'];
 
       let day: number = moment(txn.date).utc().date();
-      match = _cmp(match, parse_number_rules(day, match_config));
+      match = match && parse_number_rules(day, match_config);
     }
 
     return match;
