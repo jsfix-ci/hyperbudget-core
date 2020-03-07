@@ -1,11 +1,12 @@
-//mocha -r ts-node/register  t/report.spec.ts
-import { Transaction } from '../src/lib/transaction';
-import { Categoriser } from '../src/lib/categoriser';
-
 import { expect, assert } from 'chai';
 import 'mocha';
-import { RuleMatchMode } from '../src/lib/enums';
+
+import { Transaction } from '../src/lib/transaction';
+import { Categoriser } from '../src/lib/categoriser';
 import { Category } from '../src/types/category';
+
+import { RuleMatchMode } from '../src/lib/enums';
+
 describe('Categoriser', () => {
   it('Can parse rules', () => {
     let transaction = new Transaction({
@@ -183,6 +184,12 @@ describe('Categoriser', () => {
             ["=", "CDE"],
           ]
         },
+        "description": {
+          "rules": [
+            ["=~", "this is a bill"]
+          ]
+        },
+        "mode": RuleMatchMode.Flex
       },
       "className": "cat-bills",
       "id": "bills"
@@ -350,10 +357,18 @@ describe('Categoriser', () => {
         debitAmount: 5000,
         creditAmount: 0,
         identifier: 'CDE',
+      }),
+      new Transaction({
+        date: '20/01/2017',
+        type: 'DEB',
+        description: 'this is a bill',
+        debitAmount: 99.99,
+        creditAmount: 0,
       })
     ];
 
     return categoriser.categorise_transactions(transactions).then(() => {
+      console.log(transactions)
       expect(transactions[0].calculatedMonth).to.equal('201701');
       expect(transactions[0].categories.map((cat) => cat.id)).to.deep.equal(['tfr-pers']);
       expect(Categoriser.is_internal_transfer(transactions[0])).to.be.true;
@@ -375,6 +390,7 @@ describe('Categoriser', () => {
       expect(transactions[8].categories.map((cat) => cat.id)).to.deep.equal(['income']);
       expect(transactions[9].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
       expect(transactions[10].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
+      expect(transactions[11].categories.map((cat) => cat.id)).to.deep.equal(['exp', 'bills']);
     });
   });
 });

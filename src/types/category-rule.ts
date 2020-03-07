@@ -1,4 +1,5 @@
 import { NumericMatchConfig, StringMatchConfig, IdentifierMatchConfig } from "./match-config";
+import { RuleMatchMode } from "../lib/enums";
 
 export type CategoryRule = {
   identifier?: IdentifierMatchConfig,
@@ -8,5 +9,6 @@ export type CategoryRule = {
   source?: StringMatchConfig;
   debitAmount?: NumericMatchConfig;
   creditAmount?: NumericMatchConfig;
+  mode?: RuleMatchMode;
   [key: string]: any,
 };
