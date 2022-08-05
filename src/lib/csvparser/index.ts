@@ -25,16 +25,13 @@ export class CSVParser {
   parseCSVFile(input: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
       this.sanitiseInput(input).then((csv_text: string) => {
-        parse(
-          csv_text, { columns: true },
-          (err: Error, records: any[]) => {
-            if (err) {
-              reject(err);
-            }
-
-            resolve(this.parseCSVRecords(records));
+        parse.parse(csv_text, { columns: true }, (err: Error, records: any[]) => {
+          if (err) {
+            reject(err);
           }
-        );
+
+          resolve(this.parseCSVRecords(records));
+        });
       });
     });
   }
